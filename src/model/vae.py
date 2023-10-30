@@ -4,30 +4,30 @@ import torch
 
 class VAE(nn.Module):
 
-    def __init__(self, input_dim=784, hidden_dim=400, latent_dim=200, device='cpu'):
+    def __init__(self, input_dim: int, hidden_dim: int = 400, latent_dim: int = 200, device='cpu'):
         super(VAE, self).__init__()
 
         # encoder
         self.encoder = nn.Sequential(
             nn.Linear(input_dim, hidden_dim),
-            nn.LeakyReLU(0.2),
+            nn.ReLU(),
             nn.Linear(hidden_dim, latent_dim),
-            nn.LeakyReLU(0.2)
-        )
+            nn.ReLU(),
+        ).to(torch.float64)
 
         # latent mean and variance
-        self.mean_layer = nn.Linear(latent_dim, 2)
-        self.logvar_layer = nn.Linear(latent_dim, 2)
+        self.mean_layer = nn.Linear(latent_dim, 2).to(torch.float64)
+        self.logvar_layer = nn.Linear(latent_dim, 2).to(torch.float64)
 
         # decoder
         self.decoder = nn.Sequential(
             nn.Linear(2, latent_dim),
-            nn.LeakyReLU(0.2),
+            nn.ReLU(),
             nn.Linear(latent_dim, hidden_dim),
-            nn.LeakyReLU(0.2),
+            nn.ReLU(),
             nn.Linear(hidden_dim, input_dim),
             nn.Sigmoid()
-        )
+        ).to(torch.float64)
 
         self.device = device
 
@@ -49,9 +49,3 @@ class VAE(nn.Module):
         z = self.reparameterization(mean, logvar)
         x_hat = self.decode(z)
         return x_hat, mean, logvar
-
-    def forward(self, x):
-        mean, log_var = self.encode(x)
-        z = self.reparameterization(mean, torch.exp(0.5 * log_var))
-        x_hat = self.decode(z)
-        return x_hat, mean, log_var

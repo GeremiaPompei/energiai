@@ -4,34 +4,44 @@ from tqdm import tqdm
 
 
 class VAETrainer:
-    def __init__(self, model, lr: float = 1e-3, device='cpu'):
+    def __init__(self, model, tr_loader, ts_loader, device='cpu'):
         self.model = model
-        self.optimizer = torch.optim.Adam(model.parameters(), lr=lr)
+        self.tr_loader = tr_loader
+        self.ts_loader = ts_loader
         self.device = device
 
     def __loss_function__(self, x, x_hat, mean, log_var):
         reproduction_loss = nn.functional.binary_cross_entropy(x_hat, x, reduction='sum')
         KLD = - 0.5 * torch.sum(1 + log_var - mean.pow(2) - log_var.exp())
-
         return reproduction_loss + KLD
 
-    def __call__(self, train_loader, epochs: int = 10):
+    def __call__(self, epochs: int = 10, lr: float = 1e-3):
         self.model.train()
-        loss = 0
-        pbar = tqdm(range(epochs), desc='training...')
+        optimizer = torch.optim.Adam(self.model.parameters(), lr=lr)
+        pbar = tqdm(range(epochs), desc='training')
+        tr_loss, ts_loss = 0, 0
         for epoch in pbar:
-            loss = 0
+            tr_loss, ts_loss = 0, 0
+
             self.model.train()
-            for batch_idx, (x, y) in enumerate(train_loader):
-                self.optimizer.zero_grad()
+            for batch_idx, (x, y) in enumerate(self.tr_loader):
+                optimizer.zero_grad()
 
                 x_hat, mean, log_var = self.model(x)
                 loss = self.__loss_function__(x, x_hat, mean, log_var)
 
-                loss += loss.item()
+                tr_loss += loss.item()
 
                 loss.backward()
-                self.optimizer.step()
-            pbar.write(f'training loss: {round(loss / len(train_loader), 4)}')
-        self.model.eval()
-        return loss
+                optimizer.step()
+            tr_loss = tr_loss / len(self.tr_loader)
+
+            self.model.eval()
+            for batch_idx, (x, y) in enumerate(self.ts_loader):
+                x_hat, mean, log_var = self.model(x)
+                loss = (x - x_hat).pow(2).mean()
+                ts_loss += loss.item()
+            ts_loss = ts_loss / len(self.ts_loader)
+
+            pbar.write(f'training loss: {tr_loss}, test loss: {ts_loss}')
+        return tr_loss, ts_loss
