@@ -27,7 +27,8 @@ class VAETrainer:
             for batch_idx, (x, y) in enumerate(self.tr_loader):
                 optimizer.zero_grad()
 
-                x_hat, mean, log_var = self.model(x.to(self.device))
+                x = x.to(self.device)
+                x_hat, mean, log_var = self.model()
                 loss = self.__loss_function__(x, x_hat, mean, log_var)
 
                 tr_loss += loss.item()
