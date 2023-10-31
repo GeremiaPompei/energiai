@@ -12,10 +12,8 @@ from src.utility.select_device import select_device
 
 
 def model_selection_pipeline(hyperparams_list, epochs=20, batch_size=32, shuffle=True, dataset_dir='dataset/cleaned/',
-                             hyperparams_dir='hyperparams', tqdm=None):
-    if not os.path.exists(hyperparams_dir):
-        os.mkdir(hyperparams_dir)
-    filename = f'{hyperparams_dir}/hyperparams.json'
+                             hyperparams_path='hyperparams/hyperparams.json', tqdm=None):
+    filename = hyperparams_path
     fix_seed()
     device = select_device()
 
