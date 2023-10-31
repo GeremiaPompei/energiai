@@ -1,8 +1,9 @@
 import json
+import os.path
 from datetime import datetime
 
 import torch
-from tqdm import tqdm
+from src.utility import log
 
 from src.dataset import SifimDataset
 from src.model import VAE
@@ -11,8 +12,11 @@ from src.utility.fix_seed import fix_seed
 from src.utility.select_device import select_device
 
 
-def model_selection_pipeline(hyperparams_list, epochs=100, batch_size=32, shuffle=True):
-    filename = f'hyperparams/{datetime.now()}.json'
+def model_selection_pipeline(hyperparams_list, epochs=20, batch_size=32, shuffle=True):
+    dir = 'hyperparams'
+    if not os.path.exists(dir):
+        os.mkdir(dir)
+    filename = f'{dir}/{datetime.now()}.json'
     fix_seed()
     device = select_device()
 
@@ -21,9 +25,8 @@ def model_selection_pipeline(hyperparams_list, epochs=100, batch_size=32, shuffl
     vl_dataset = SifimDataset(start=0.8)
 
     best_hyperparams, best_loss = None, None
-    pbar = tqdm(hyperparams_list, desc='model selection')
-    for hyperparams in pbar:
-        pbar.write(f'hyperparams: {hyperparams}')
+    for i, hyperparams in enumerate(hyperparams_list):
+        log.info(f'Start iteration {i + 1}/{len(hyperparams_list)} => hyperparams: {hyperparams}')
         model_hyperparams = {k.replace('model_', ''): v for k, v in hyperparams.items() if 'model_' in k}
         trainer_hyperparams = {k.replace('trainer_', ''): v for k, v in hyperparams.items() if 'trainer_' in k}
 
@@ -43,3 +46,6 @@ def model_selection_pipeline(hyperparams_list, epochs=100, batch_size=32, shuffl
             best_loss = vl_loss
             with open(filename, 'w') as fn:
                 json.dump(dict(best_hyperparams=best_hyperparams, best_loss=best_loss), fn)
+                log.info(f'Best loss: {best_loss}, best hyperparams: {best_hyperparams}')
+
+    log.info(f'Final best loss: {best_loss}, best hyperparams: {best_hyperparams}')

@@ -6,4 +6,4 @@ def gridsearch_generator(hyperparams_lists):
 
 
 def randomsearch_generator(ranges, times=10):
-    return [{callback(start, end) for (start, end, callback) in ranges} for _ in range(times)]
+    return [{k: callback(start, end) for k, (start, end, callback) in ranges.items()} for _ in range(times)]

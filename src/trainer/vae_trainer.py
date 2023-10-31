@@ -1,6 +1,6 @@
 import torch
 from torch import nn
-from tqdm import tqdm
+from src.utility import log
 
 
 class VAETrainer:
@@ -18,9 +18,8 @@ class VAETrainer:
     def __call__(self, epochs: int = 10, lr: float = 1e-3):
         self.model.train()
         optimizer = torch.optim.Adam(self.model.parameters(), lr=lr)
-        pbar = tqdm(range(epochs), desc='training')
         tr_loss, ts_loss = 0, 0
-        for epoch in pbar:
+        for epoch in range(epochs):
             tr_loss, ts_loss = 0, 0
 
             self.model.train()
@@ -42,5 +41,5 @@ class VAETrainer:
                 ts_loss += loss.item()
             ts_loss = ts_loss / len(self.ts_loader)
 
-            pbar.write(f'training loss: {tr_loss}, test loss: {ts_loss}')
+            log.info(f'Epoch {epoch + 1}/{epochs} => training loss: {tr_loss}, test loss: {ts_loss}')
         return tr_loss, ts_loss
