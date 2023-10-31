@@ -11,14 +11,14 @@ from src.utility.fix_seed import fix_seed
 from src.utility.select_device import select_device
 
 
-def model_selection_pipeline(hyperparams_list, epochs=100, batch_size=64, shuffle=True):
+def model_selection_pipeline(hyperparams_list, epochs=100, batch_size=32, shuffle=True):
     filename = f'hyperparams/{datetime.now()}.json'
     fix_seed()
     device = select_device()
 
     # dataset
-    tr_dataset = SifimDataset(end=0.6)
-    vl_dataset = SifimDataset(start=0.6, end=0.8)
+    tr_dataset = SifimDataset(end=0.8)
+    vl_dataset = SifimDataset(start=0.8)
 
     best_hyperparams, best_loss = None, None
     pbar = tqdm(hyperparams_list, desc='model selection')
@@ -31,7 +31,7 @@ def model_selection_pipeline(hyperparams_list, epochs=100, batch_size=64, shuffl
         vl_dataloader = torch.utils.data.DataLoader(vl_dataset, batch_size=batch_size, shuffle=shuffle)
 
         # model
-        model = VAE(tr_dataset.dataset.shape[1], **model_hyperparams, device=device)
+        model = VAE(tr_dataset.dataset.shape[-1], tr_dataset.dataset.shape[1], 1, **model_hyperparams, device=device)
 
         # trainer
         trainer = VAETrainer(model, tr_dataloader, vl_dataloader, device=device)
