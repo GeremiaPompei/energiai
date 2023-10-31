@@ -28,7 +28,7 @@ class VAETrainer:
                 optimizer.zero_grad()
 
                 x = x.to(self.device)
-                x_hat, mean, log_var = self.model()
+                x_hat, mean, log_var = self.model(x)
                 loss = self.__loss_function__(x, x_hat, mean, log_var)
 
                 tr_loss += loss.item()
