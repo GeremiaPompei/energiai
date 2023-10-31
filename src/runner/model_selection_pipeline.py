@@ -12,11 +12,10 @@ from src.utility.fix_seed import fix_seed
 from src.utility.select_device import select_device
 
 
-def model_selection_pipeline(hyperparams_list, epochs=20, batch_size=32, shuffle=True):
-    dir = 'hyperparams'
+def model_selection_pipeline(hyperparams_list, epochs=20, batch_size=32, shuffle=True, dir='hyperparams'):
     if not os.path.exists(dir):
         os.mkdir(dir)
-    filename = f'{dir}/{datetime.now()}.json'
+    filename = f'{dir}/hyperparams.json'
     fix_seed()
     device = select_device()
 
@@ -25,6 +24,14 @@ def model_selection_pipeline(hyperparams_list, epochs=20, batch_size=32, shuffle
     vl_dataset = SifimDataset(start=0.8)
 
     best_hyperparams, best_loss = None, None
+    cache = {}
+    if os.path.exists(filename):
+        with open(filename, 'r') as fn:
+            data = json.load(fn)
+            best_hyperparams = data['best_hyperparams']
+            best_loss = data['best_loss']
+            cache = data['cache']
+            cache = {json.dumps(c['hyperparams']): c['loss'] for c in cache}
     for i, hyperparams in enumerate(hyperparams_list):
         log.info(f'Start iteration {i + 1}/{len(hyperparams_list)} => hyperparams: {hyperparams}')
         model_hyperparams = {k.replace('model_', ''): v for k, v in hyperparams.items() if 'model_' in k}
@@ -39,13 +46,21 @@ def model_selection_pipeline(hyperparams_list, epochs=20, batch_size=32, shuffle
         # trainer
         trainer = VAETrainer(model, tr_dataloader, vl_dataloader, device=device)
 
-        tr_loss, vl_loss = trainer(epochs=epochs, **trainer_hyperparams)
+        if json.dumps(hyperparams) in cache:
+            vl_loss = cache[json.dumps(hyperparams)]
+        else:
+            _, vl_loss = trainer(epochs=epochs, **trainer_hyperparams)
 
         if best_loss is None or best_loss > vl_loss:
             best_hyperparams = hyperparams
             best_loss = vl_loss
+            formatted_cache = [dict(hyperparams=json.loads(hyperparams), loss=loss) for hyperparams, loss in cache.items()]
             with open(filename, 'w') as fn:
-                json.dump(dict(best_hyperparams=best_hyperparams, best_loss=best_loss), fn)
+                json.dump(dict(
+                    best_hyperparams=best_hyperparams,
+                    best_loss=best_loss,
+                    cache=formatted_cache,
+                ), fn)
                 log.info(f'Best loss: {best_loss}, best hyperparams: {best_hyperparams}')
 
     log.info(f'Final best loss: {best_loss}, best hyperparams: {best_hyperparams}')
