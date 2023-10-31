@@ -4,8 +4,9 @@ import torch
 
 class VAE(nn.Module):
 
-    def __init__(self, features, tau, input_dim: int = 1, hidden_dim: int = 400, latent_dim: int = 200, device='cpu'):
+    def __init__(self, features, timesteps, input_dim: int = 1, hidden_dim: int = 400, latent_dim: int = 200, device='cpu'):
         super(VAE, self).__init__()
+        self.device = device
 
         # encoder
         self.encoder = nn.Sequential(
@@ -14,24 +15,22 @@ class VAE(nn.Module):
             nn.Conv2d(hidden_dim, hidden_dim, kernel_size=3, padding=1),
             nn.ReLU(),
             nn.Flatten(),
-            nn.Linear(hidden_dim * features * tau, latent_dim),
-        ).to(torch.float64)
+            nn.Linear(hidden_dim * features * timesteps, latent_dim),
+        ).to(torch.float64).to(self.device)
 
         # latent mean and variance
-        self.mean_layer = nn.Linear(latent_dim, 2).to(torch.float64)
-        self.logvar_layer = nn.Linear(latent_dim, 2).to(torch.float64)
+        self.mean_layer = nn.Linear(latent_dim, 2).to(torch.float64).to(self.device)
+        self.logvar_layer = nn.Linear(latent_dim, 2).to(torch.float64).to(self.device)
 
         # decoder
         self.decoder = nn.Sequential(
-            nn.Linear(2, latent_dim * tau * features),
-            nn.Unflatten(1, (latent_dim, tau, features)),
+            nn.Linear(2, latent_dim * timesteps * features),
+            nn.Unflatten(1, (latent_dim, timesteps, features)),
             nn.ConvTranspose2d(latent_dim, hidden_dim, kernel_size=3, padding=1),
             nn.ReLU(),
             nn.ConvTranspose2d(hidden_dim, input_dim, kernel_size=3, padding=1),
             nn.Sigmoid()
-        ).to(torch.float64)
-
-        self.device = device
+        ).to(torch.float64).to(self.device)
 
     def encode(self, x):
         x = self.encoder(x)
