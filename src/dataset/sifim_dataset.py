@@ -1,3 +1,5 @@
+import os
+
 import pandas as pd
 import torch
 
@@ -5,11 +7,18 @@ import torch
 class SifimDataset(torch.utils.data.Dataset):
 
     def __init__(self, timesteps=10, start=0, end=1):
-        self.dataset = torch.from_numpy(pd.read_csv('dataset/cleaned/dataset.csv').to_numpy()[:, 1:])
-        n_examples = int(self.dataset.shape[0] / timesteps)
-        self.dataset = self.dataset[:n_examples * timesteps].view(n_examples, timesteps, self.dataset.shape[-1])
-        init_size, end_size = int(start * self.dataset.shape[0]), int(end * self.dataset.shape[0])
-        self.dataset = self.dataset[init_size:end_size]
+        dir = 'dataset/cleaned/'
+        datasets = []
+
+        for filename in os.listdir(dir):
+            if not filename.startswith('.'):
+                dataset = torch.from_numpy(pd.read_csv(f'{dir}/{filename}').to_numpy()[:, 1:]).to(torch.float64)
+                n_examples = int(dataset.shape[0] / timesteps)
+                dataset = dataset[:n_examples * timesteps].view(n_examples, timesteps, dataset.shape[-1])
+                init_size, end_size = int(start * dataset.shape[0]), int(end * dataset.shape[0])
+                datasets.append(dataset[init_size:end_size])
+
+        self.dataset = torch.cat(datasets)
 
     def __len__(self):
         return self.dataset.shape[0]

@@ -8,7 +8,7 @@ from src.utility.hyperparams_generator import gridsearch_generator, randomsearch
 
 def main():
     # preprocessing
-    # preprocessing_pipeline()
+    preprocessing_pipeline()
 
     # training
     # training_pipeline()
