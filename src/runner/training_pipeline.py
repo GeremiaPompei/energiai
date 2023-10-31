@@ -13,8 +13,8 @@ def training_pipeline(epochs=100, batch_size=64, lr=1e-3, hidden_dim=400, latent
     device = select_device()
 
     # dataset
-    tr_dataset = SifimDataset(end=0.6).to(device)
-    vl_dataset = SifimDataset(start=0.6, end=0.8).to(device)
+    tr_dataset = SifimDataset(end=0.8)
+    vl_dataset = SifimDataset(start=0.8)
     tr_dataloader = torch.utils.data.DataLoader(tr_dataset, batch_size=batch_size, shuffle=shuffle)
     vl_dataloader = torch.utils.data.DataLoader(vl_dataset, batch_size=batch_size, shuffle=shuffle)
 

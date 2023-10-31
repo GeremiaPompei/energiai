@@ -17,8 +17,8 @@ def model_selection_pipeline(hyperparams_list, epochs=100, batch_size=32, shuffl
     device = select_device()
 
     # dataset
-    tr_dataset = SifimDataset(end=0.8).to(device)
-    vl_dataset = SifimDataset(start=0.8).to(device)
+    tr_dataset = SifimDataset(end=0.8)
+    vl_dataset = SifimDataset(start=0.8)
 
     best_hyperparams, best_loss = None, None
     pbar = tqdm(hyperparams_list, desc='model selection')
