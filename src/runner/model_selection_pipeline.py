@@ -60,19 +60,19 @@ def model_selection_pipeline(hyperparams_list, epochs=20, batch_size=32, shuffle
 
         cache[json.dumps(hyperparams)] = vl_loss
         best_hyperparams, best_loss, cache = __read_hyperparams_file__(filename, cache)
+        with open(filename, 'w') as fn:
+            json.dump(dict(
+                best_hyperparams=best_hyperparams,
+                best_loss=best_loss,
+                cache=[
+                    dict(hyperparams=json.loads(hyperparams), loss=loss)
+                    for hyperparams, loss in cache.items()
+                ],
+            ), fn)
+
         if best_loss is None or best_loss > vl_loss:
             best_hyperparams = hyperparams
             best_loss = vl_loss
-            formatted_cache = [
-                dict(hyperparams=json.loads(hyperparams), loss=loss)
-                for hyperparams, loss in cache.items()
-            ]
-            with open(filename, 'w') as fn:
-                json.dump(dict(
-                    best_hyperparams=best_hyperparams,
-                    best_loss=best_loss,
-                    cache=formatted_cache,
-                ), fn)
-                log.info(f'Best loss: {best_loss}, best hyperparams: {best_hyperparams}')
+            log.info(f'Best loss: {best_loss}, best hyperparams: {best_hyperparams}')
 
     log.info(f'Final best loss: {best_loss}, best hyperparams: {best_hyperparams}')
