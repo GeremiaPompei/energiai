@@ -25,7 +25,7 @@ def main():
     else:
         hyperparams_list = [
             dict(
-                trainer_lr=random.uniform(0, 1),
+                trainer_lr=random.uniform(0, 0.001),
                 model_hidden_dim=random.randint(100, 600),
                 model_latent_dim=random.randint(100, 600),
             ) for _ in range(100)

@@ -46,8 +46,7 @@ class VAE(nn.Module):
         return self.decoder(x)
 
     def forward(self, x):
-        x = x.unsqueeze(dim=1)
         mean, logvar = self.encode(x)
         z = self.reparameterization(mean, logvar)
-        x_hat = self.decode(z).squeeze()
+        x_hat = self.decode(z)
         return x_hat, mean, logvar

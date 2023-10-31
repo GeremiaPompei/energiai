@@ -11,6 +11,18 @@ from src.utility.fix_seed import fix_seed
 from src.utility.select_device import select_device
 
 
+def __read_hyperparams_file__(filename, cache):
+    with open(filename, 'r') as fn:
+        data = json.load(fn)
+        best_hyperparams = data['best_hyperparams']
+        best_loss = data['best_loss']
+        for c in data['cache']:
+            hp = json.dumps(c['hyperparams'])
+            if hp not in cache:
+                cache[hp] = c['loss']
+    return best_hyperparams, best_loss, cache
+
+
 def model_selection_pipeline(hyperparams_list, epochs=20, batch_size=32, shuffle=True, dataset_dir='dataset/cleaned/',
                              hyperparams_path='hyperparams/hyperparams.json', tqdm=None):
     filename = hyperparams_path
@@ -21,15 +33,9 @@ def model_selection_pipeline(hyperparams_list, epochs=20, batch_size=32, shuffle
     tr_dataset = SifimDataset(dir=dataset_dir, end=0.8)
     vl_dataset = SifimDataset(dir=dataset_dir, start=0.8)
 
-    best_hyperparams, best_loss = None, None
-    cache = {}
+    best_hyperparams, best_loss, cache = None, None, {}
     if os.path.exists(filename):
-        with open(filename, 'r') as fn:
-            data = json.load(fn)
-            best_hyperparams = data['best_hyperparams']
-            best_loss = data['best_loss']
-            cache = data['cache']
-            cache = {json.dumps(c['hyperparams']): c['loss'] for c in cache}
+        best_hyperparams, best_loss, cache = __read_hyperparams_file__(filename, cache)
 
     if tqdm is None:
         tqdm = lambda x: x
@@ -52,11 +58,15 @@ def model_selection_pipeline(hyperparams_list, epochs=20, batch_size=32, shuffle
         else:
             _, vl_loss = trainer(epochs=epochs, **trainer_hyperparams)
 
+        cache[json.dumps(hyperparams)] = vl_loss
+        best_hyperparams, best_loss, cache = __read_hyperparams_file__(filename, cache)
         if best_loss is None or best_loss > vl_loss:
             best_hyperparams = hyperparams
             best_loss = vl_loss
-            formatted_cache = [dict(hyperparams=json.loads(hyperparams), loss=loss) for hyperparams, loss in
-                               cache.items()]
+            formatted_cache = [
+                dict(hyperparams=json.loads(hyperparams), loss=loss)
+                for hyperparams, loss in cache.items()
+            ]
             with open(filename, 'w') as fn:
                 json.dump(dict(
                     best_hyperparams=best_hyperparams,
