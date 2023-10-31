@@ -1,6 +1,5 @@
 import json
 import os.path
-from datetime import datetime
 
 import torch
 from src.utility import log
@@ -13,7 +12,7 @@ from src.utility.select_device import select_device
 
 
 def model_selection_pipeline(hyperparams_list, epochs=20, batch_size=32, shuffle=True, dataset_dir='dataset/cleaned/',
-                             hyperparams_dir='hyperparams'):
+                             hyperparams_dir='hyperparams', tqdm=None):
     if not os.path.exists(hyperparams_dir):
         os.mkdir(hyperparams_dir)
     filename = f'{hyperparams_dir}/hyperparams.json'
@@ -33,7 +32,10 @@ def model_selection_pipeline(hyperparams_list, epochs=20, batch_size=32, shuffle
             best_loss = data['best_loss']
             cache = data['cache']
             cache = {json.dumps(c['hyperparams']): c['loss'] for c in cache}
-    for i, hyperparams in enumerate(hyperparams_list):
+
+    if tqdm is None:
+        tqdm = lambda x: x
+    for i, hyperparams in enumerate(tqdm(hyperparams_list)):
         log.info(f'Start iteration {i + 1}/{len(hyperparams_list)} => hyperparams: {hyperparams}')
         model_hyperparams = {k.replace('model_', ''): v for k, v in hyperparams.items() if 'model_' in k}
         trainer_hyperparams = {k.replace('trainer_', ''): v for k, v in hyperparams.items() if 'trainer_' in k}
