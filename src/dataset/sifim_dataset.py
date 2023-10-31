@@ -6,8 +6,7 @@ import torch
 
 class SifimDataset(torch.utils.data.Dataset):
 
-    def __init__(self, timesteps=10, start=0, end=1):
-        dir = 'dataset/cleaned/'
+    def __init__(self, dir='dataset/cleaned/', timesteps=10, start=0, end=1):
         datasets = []
 
         for filename in os.listdir(dir):

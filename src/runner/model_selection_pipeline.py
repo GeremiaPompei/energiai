@@ -12,16 +12,17 @@ from src.utility.fix_seed import fix_seed
 from src.utility.select_device import select_device
 
 
-def model_selection_pipeline(hyperparams_list, epochs=20, batch_size=32, shuffle=True, dir='hyperparams'):
-    if not os.path.exists(dir):
-        os.mkdir(dir)
-    filename = f'{dir}/hyperparams.json'
+def model_selection_pipeline(hyperparams_list, epochs=20, batch_size=32, shuffle=True, dataset_dir='dataset/cleaned/',
+                             hyperparams_dir='hyperparams'):
+    if not os.path.exists(hyperparams_dir):
+        os.mkdir(hyperparams_dir)
+    filename = f'{hyperparams_dir}/hyperparams.json'
     fix_seed()
     device = select_device()
 
     # dataset
-    tr_dataset = SifimDataset(end=0.8)
-    vl_dataset = SifimDataset(start=0.8)
+    tr_dataset = SifimDataset(dir=dataset_dir, end=0.8)
+    vl_dataset = SifimDataset(dir=dataset_dir, start=0.8)
 
     best_hyperparams, best_loss = None, None
     cache = {}
@@ -54,7 +55,8 @@ def model_selection_pipeline(hyperparams_list, epochs=20, batch_size=32, shuffle
         if best_loss is None or best_loss > vl_loss:
             best_hyperparams = hyperparams
             best_loss = vl_loss
-            formatted_cache = [dict(hyperparams=json.loads(hyperparams), loss=loss) for hyperparams, loss in cache.items()]
+            formatted_cache = [dict(hyperparams=json.loads(hyperparams), loss=loss) for hyperparams, loss in
+                               cache.items()]
             with open(filename, 'w') as fn:
                 json.dump(dict(
                     best_hyperparams=best_hyperparams,
