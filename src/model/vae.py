@@ -2,20 +2,45 @@ from torch import nn
 import torch
 
 
+def basic_conv_layer(in_features, out_features):
+    return nn.Conv1d(in_features, out_features, kernel_size=3, padding=1)
+
+
+def mobilenet_conv_layer(in_features, out_features):
+    return nn.Sequential(
+        nn.Conv1d(in_features, 1, kernel_size=3, padding=1),
+        nn.Conv1d(1, out_features, kernel_size=1, padding=0),
+    )
+
+
+conv_layer_constructors = {c.__name__: c for c in [basic_conv_layer, mobilenet_conv_layer]}
+
+
 class VAE(nn.Module):
 
-    def __init__(self, features, timesteps, input_dim: int = 1, hidden_dim: int = 400, latent_dim: int = 200, device='cpu'):
+    def __init__(
+            self,
+            features,
+            timesteps,
+            hidden_dim: int = 400,
+            latent_dim: int = 200,
+            conv_layer_consructor: str = 'basic_conv_layer',
+            device='cpu',
+    ):
         super(VAE, self).__init__()
         self.device = device
+        conv_layer_consructor = conv_layer_constructors[conv_layer_consructor]
 
         # encoder
         self.encoder = nn.Sequential(
-            nn.Conv2d(input_dim, hidden_dim, kernel_size=3, padding=1),
+            conv_layer_consructor(features, hidden_dim),
+            nn.BatchNorm1d(hidden_dim),
             nn.ReLU(),
-            nn.Conv2d(hidden_dim, hidden_dim, kernel_size=3, padding=1),
+            conv_layer_consructor(hidden_dim, hidden_dim),
+            nn.BatchNorm1d(hidden_dim),
             nn.ReLU(),
             nn.Flatten(),
-            nn.Linear(hidden_dim * features * timesteps, latent_dim),
+            nn.Linear(hidden_dim * timesteps, latent_dim),
         ).to(torch.float64).to(self.device)
 
         # latent mean and variance
@@ -24,11 +49,13 @@ class VAE(nn.Module):
 
         # decoder
         self.decoder = nn.Sequential(
-            nn.Linear(2, latent_dim * timesteps * features),
-            nn.Unflatten(1, (latent_dim, timesteps, features)),
-            nn.ConvTranspose2d(latent_dim, hidden_dim, kernel_size=3, padding=1),
+            nn.Linear(2, latent_dim * timesteps),
+            nn.Unflatten(1, (latent_dim, timesteps)),
+            conv_layer_consructor(latent_dim, hidden_dim),
+            nn.BatchNorm1d(hidden_dim),
             nn.ReLU(),
-            nn.ConvTranspose2d(hidden_dim, input_dim, kernel_size=3, padding=1),
+            conv_layer_consructor(hidden_dim, features),
+            nn.BatchNorm1d(features),
             nn.Sigmoid()
         ).to(torch.float64).to(self.device)
 

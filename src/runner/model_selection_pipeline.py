@@ -52,7 +52,7 @@ def model_selection_pipeline(hyperparams_list, epochs=20, batch_size=32, shuffle
         vl_dataloader = torch.utils.data.DataLoader(vl_dataset, batch_size=batch_size, shuffle=shuffle)
 
         # model
-        model = VAE(tr_dataset.dataset.shape[-1], tr_dataset.dataset.shape[1], 1, **model_hyperparams, device=device)
+        model = VAE(tr_dataset.dataset.shape[-1], tr_dataset.dataset.shape[1], **model_hyperparams, device=device)
 
         # trainer
         trainer = VAETrainer(model, tr_dataloader, vl_dataloader, device=device)

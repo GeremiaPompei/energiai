@@ -25,7 +25,7 @@ class VAETrainer:
             self.model.train()
             for batch_idx, (x, y) in enumerate(self.tr_loader):
                 optimizer.zero_grad()
-                x = x.unsqueeze(dim=1).to(self.device)
+                x = x.transpose(-1, -2).to(self.device)
                 x_hat, mean, log_var = self.model(x)
                 loss = self.__loss_function__(x, x_hat, mean, log_var)
                 tr_loss += loss.item()
@@ -35,7 +35,7 @@ class VAETrainer:
 
             self.model.eval()
             for batch_idx, (x, y) in enumerate(self.ts_loader):
-                x = x.unsqueeze(dim=1).to(self.device)
+                x = x.transpose(-1, -2).to(self.device)
                 x_hat, mean, log_var = self.model(x)
                 loss = (x - x_hat).pow(2).mean()
                 ts_loss += loss.item()
