@@ -10,9 +10,11 @@ class VAE(nn.Module):
 
         # encoder
         self.encoder = nn.Sequential(
-            nn.Conv2d(input_dim, hidden_dim, kernel_size=3, padding=1),
+            nn.Conv2d(input_dim, hidden_dim, kernel_size=(3, 1), padding=(1, 0)),
+            nn.Conv2d(hidden_dim, hidden_dim, kernel_size=(1, 3), padding=(0, 1)),
             nn.ReLU(),
-            nn.Conv2d(hidden_dim, hidden_dim, kernel_size=3, padding=1),
+            nn.Conv2d(input_dim, hidden_dim, kernel_size=(3, 1), padding=(1, 0)),
+            nn.Conv2d(hidden_dim, hidden_dim, kernel_size=(1, 3), padding=(0, 1)),
             nn.ReLU(),
             nn.Flatten(),
             nn.Linear(hidden_dim * features * timesteps, latent_dim),
@@ -26,9 +28,12 @@ class VAE(nn.Module):
         self.decoder = nn.Sequential(
             nn.Linear(2, latent_dim * timesteps * features),
             nn.Unflatten(1, (latent_dim, timesteps, features)),
-            nn.ConvTranspose2d(latent_dim, hidden_dim, kernel_size=3, padding=1),
+            nn.ConvTranspose2d(latent_dim, hidden_dim, kernel_size=(1, 3), padding=(0, 1)),
+            nn.ConvTranspose2d(hidden_dim, input_dim, kernel_size=(3, 1), padding=(1, 0)),
             nn.ReLU(),
-            nn.ConvTranspose2d(hidden_dim, input_dim, kernel_size=3, padding=1),
+            nn.ConvTranspose2d(latent_dim, hidden_dim, kernel_size=(1, 3), padding=(0, 1)),
+            nn.ConvTranspose2d(hidden_dim, input_dim, kernel_size=(3, 1), padding=(1, 0)),
+            nn.ReLU(),
             nn.Sigmoid()
         ).to(torch.float64).to(self.device)
 
