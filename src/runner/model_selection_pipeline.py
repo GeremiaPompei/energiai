@@ -20,6 +20,10 @@ def __read_hyperparams_file__(filename, cache):
             hp = json.dumps(c['hyperparams'])
             if hp not in cache:
                 cache[hp] = c['loss']
+    for hp, loss in cache.items():
+        if best_loss is None or best_loss > loss:
+            best_loss = loss
+            best_hyperparams = json.loads(hp)
     return best_hyperparams, best_loss, cache
 
 
@@ -59,7 +63,12 @@ def model_selection_pipeline(hyperparams_list, epochs=20, batch_size=32, shuffle
             _, vl_loss = trainer(epochs=epochs, **trainer_hyperparams)
 
         cache[json.dumps(hyperparams)] = vl_loss
-        best_hyperparams, best_loss, cache = __read_hyperparams_file__(filename, cache)
+        if os.path.exists(filename):
+            best_hyperparams, best_loss, cache = __read_hyperparams_file__(filename, cache)
+        if best_loss is None or best_loss > vl_loss:
+            best_hyperparams = hyperparams
+            best_loss = vl_loss
+            log.info(f'Best loss: {best_loss}, best hyperparams: {best_hyperparams}')
         with open(filename, 'w') as fn:
             json.dump(dict(
                 best_hyperparams=best_hyperparams,
@@ -69,10 +78,5 @@ def model_selection_pipeline(hyperparams_list, epochs=20, batch_size=32, shuffle
                     for hyperparams, loss in cache.items()
                 ],
             ), fn)
-
-        if best_loss is None or best_loss > vl_loss:
-            best_hyperparams = hyperparams
-            best_loss = vl_loss
-            log.info(f'Best loss: {best_loss}, best hyperparams: {best_hyperparams}')
 
     log.info(f'Final best loss: {best_loss}, best hyperparams: {best_hyperparams}')
