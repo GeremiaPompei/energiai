@@ -1,10 +1,9 @@
+import json
 import os
 
 import numpy as np
 import pandas as pd
 from functools import reduce
-
-eps = 1e-17
 
 columns_blacklist = ['timestamp', 'id', 'sub_id', 'contatore_di_installazione', 'contatore_di_misura',
                      'numero_seriale']
@@ -27,23 +26,24 @@ def preprocessing_pipeline(raw_dir: str = 'dataset/raw', output_dir: str = 'data
     X = np.concatenate(list(datasets.values()))
 
     # standardization
-    X_mean, X_std = X.mean(0), X.std(0)
-    X_std[X_std == 0] = eps
+    X_mean, X_std = X.mean(), X.std()
     X = (X - X_mean) / X_std
-    # normalization (min-max scaler)
-    X_min, X_max = X.min(0), X.max(0)
-    X_max[X_max == X_min] += eps
-    # X = (X - X_min) / (X_max - X_min)
+    X_min, X_max = X.min(), X.max()
 
     cleaned_subdir, normalization_subdir = f'{output_dir}/cleaned', f'{output_dir}/normalization'
     for path in [cleaned_subdir, normalization_subdir]:
         if not os.path.exists(path):
             os.mkdir(path)
 
-    pd.DataFrame(X_mean).to_csv(f'{normalization_subdir}/mean.csv')
-    pd.DataFrame(X_std).to_csv(f'{normalization_subdir}/std.csv')
-    pd.DataFrame(X_min).to_csv(f'{normalization_subdir}/min.csv')
-    pd.DataFrame(X_max).to_csv(f'{normalization_subdir}/max.csv')
+    with open(f'{normalization_subdir}/scale_factors.json', 'w') as fp:
+        json.dump(
+            dict(
+                mean=X_mean,
+                std=X_std,
+                max=X_max,
+                min=X_min,
+            ), fp
+        )
 
     for filename, dataset in datasets.items():
         dataset = (dataset - X_mean) / X_std
