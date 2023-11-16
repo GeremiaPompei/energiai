@@ -6,7 +6,7 @@ from src.utility import log
 
 from src.dataset import SifimDataset
 from src.model import VAE
-from src.trainer.vae_trainer import VAETrainer
+from src.concept_drift.vae_trainer import VAETrainer
 from src.utility.fix_seed import fix_seed
 from src.utility.select_device import select_device
 

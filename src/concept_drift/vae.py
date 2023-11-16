@@ -14,6 +14,7 @@ class VAE(nn.Module):
     ):
         super(VAE, self).__init__()
         self.device = device
+
         # encoder
         self.encoder = nn.Sequential(
             nn.Linear(features, hidden_dim),
