@@ -30,11 +30,10 @@ def model_selection(
         trainer_constructor,
         tr_dataset,
         vl_dataset,
-        epochs=20,
         batch_size=32,
         shuffle=True,
         hyperparams_path='hyperparams/hyperparams.json',
-        model_path='models/model.torch',
+        model_path='model/model.torch',
         tqdm=None,
         retrain=True,
 ):
@@ -95,9 +94,10 @@ def model_selection(
         model = model_constructor(tr_dataset.x.shape[-1], **model_hyperparams, device=device)
         # trainer
         trainer = trainer_constructor(model, tr_dataloader, vl_dataloader, device=device)
-        if not os.path.exists(model_path):
+        if model_path is None or not os.path.exists(model_path):
             _, vl_loss = trainer(**trainer_hyperparams)
-            torch.save(model, model_path)
+            if model_path is not None:
+                torch.save(model, model_path)
         else:
             model = torch.load(model_path)
         return model

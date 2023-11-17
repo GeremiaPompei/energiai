@@ -29,18 +29,23 @@ class LSTM(torch.nn.Module):
     def __loss__(self, y, p):
         return ((y - p) ** 2).mean(-1)
 
-    def forward(self, x, y):
+    def forward(self, x):
         out, _ = self.lstm(x)
         out = F.relu(out)
         out = F.relu(self.ff1(out))
         out = self.ff2(out)
+        return out
+
+    def register_std(self, x, y):
+        out = self(x)
         e = self.__loss__(y, out)
-        if self.training:
-            tot = self.tr_data + 1
-            self.sigma = (self.sigma * self.tr_data + e.std()) / tot
-            self.tr_data = tot
-            return out
-        else:
-            e_std = e.unfold(1, self.window, 1).std(-1)
-            res = torch.logical_or(-2 * self.sigma > e_std, e_std > 2 * self.sigma).to(torch.float64)
-            return res, out.detach(), e_std.detach()
+        tot = self.tr_data + 1
+        self.sigma = (self.sigma * self.tr_data + e.std()) / tot
+        self.tr_data = tot
+
+    def predict(self, x, y):
+        out = self(x)
+        e = self.__loss__(y, out)
+        e_std = e.unfold(1, self.window, 1).std(-1)
+        res = torch.logical_or(-2 * self.sigma > e_std, e_std > 2 * self.sigma).to(torch.float64)
+        return res, out.detach(), e_std.detach()

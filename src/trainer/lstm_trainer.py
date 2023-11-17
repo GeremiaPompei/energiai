@@ -1,12 +1,10 @@
 import torch
 from torch import nn
-
-from src.anomaly_detector.esn import ESN
 from src.utility import log
 
 
-class ESNTrainer:
-    def __init__(self, model: ESN, tr_loader, ts_loader, device='cpu'):
+class LSTMTrainer:
+    def __init__(self, model, tr_loader, ts_loader, device='cpu'):
         self.model = model
         self.tr_loader = tr_loader
         self.ts_loader = ts_loader
@@ -26,21 +24,26 @@ class ESNTrainer:
                 optimizer.zero_grad()
                 data = data.to(self.device)
                 x, y = data[:, 1:], data[:, :-1]
-                p = self.model(x, y)
+                p = self.model(x)
                 loss = criterion(y, p)
                 tr_loss += loss.item()
                 loss.backward()
                 optimizer.step()
             tr_loss = tr_loss / len(self.tr_loader)
 
+            for batch_idx, (data, _) in enumerate(self.tr_loader):
+                data = data.to(self.device)
+                x, y = data[:, 1:], data[:, :-1]
+                self.model.register_std(x, y)
+
             self.model.eval()
             for batch_idx, (data, labels) in enumerate(self.ts_loader):
                 data = data.to(self.device)
                 x, y = data[:, 1:], data[:, :-1]
-                p = self.model(x, y)
+                p, _, _ = self.model.predict(x, y)
                 labels = labels[:, -p.shape[1]:]
                 ts_loss += criterion(labels, p).item()
-                ts_acc += (labels.argmax(-1) - p.argmax(-1) == 0).to(torch.float64).mean()
+                ts_acc += (labels - p == 0).to(torch.float64).mean()
             ts_loss = ts_loss / len(self.ts_loader)
             ts_acc = ts_acc / len(self.ts_loader)
             ts_acc = f'{round(ts_acc.item() * 100, 2)}%'
