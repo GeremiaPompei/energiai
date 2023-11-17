@@ -2,6 +2,7 @@ import torch
 
 from src.anomaly_detector.lstm import LSTM
 from src.anomaly_detector.lstm_trainer import LSTMTrainer
+from src.dataset import SifimDataset
 from src.detector.detector import Detector
 from src.detector.model_selection import model_selection
 
@@ -16,12 +17,7 @@ class AnomalyDetector(Detector):
             **kwargs,
         )
 
-    def predict(self, ts_dataset, batch_size=32, shuffle=True):
-        ts_dataloader = torch.utils.data.DataLoader(ts_dataset, batch_size=batch_size, shuffle=shuffle)
+    def predict(self, ts_dataset: SifimDataset):
         self.model.eval()
-        for batch_idx, (x, y) in enumerate(ts_dataloader):
-            m, v = self.model.encode(x.to(self.device))
-            z = self.model.reparameterization(m, v).to(torch.float64).abs()
-            I = torch.eye(z.shape[-2]).to(self.device).to(torch.float64)
-            dist = (z.transpose(-1, -2) @ I @ z).sqrt()
-            print(dist.mean())
+        x, y = ts_dataset.x[:, 1:], ts_dataset.x[:, :-1]
+        return self.model(x, y)

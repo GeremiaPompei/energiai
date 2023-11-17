@@ -1,10 +1,12 @@
 import torch
 from torch import nn
+
+from src.anomaly_detector.esn import ESN
 from src.utility import log
 
 
-class LSTMTrainer:
-    def __init__(self, model, tr_loader, ts_loader, device='cpu'):
+class ESNTrainer:
+    def __init__(self, model: ESN, tr_loader, ts_loader, device='cpu'):
         self.model = model
         self.tr_loader = tr_loader
         self.ts_loader = ts_loader
@@ -35,7 +37,7 @@ class LSTMTrainer:
             for batch_idx, (data, labels) in enumerate(self.ts_loader):
                 data = data.to(self.device)
                 x, y = data[:, 1:], data[:, :-1]
-                p, _, _ = self.model(x, y)
+                p = self.model(x, y)
                 labels = labels[:, -p.shape[1]:]
                 ts_loss += criterion(labels, p).item()
                 ts_acc += (labels.argmax(-1) - p.argmax(-1) == 0).to(torch.float64).mean()

@@ -1,7 +1,9 @@
+from src.preprocessing import preprocessing_pipeline
 from src.runner.pipeline import pipeline
 
 
 def main():
+    # preprocessing_pipeline()
     pipeline()
 
 

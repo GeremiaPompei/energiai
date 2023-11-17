@@ -34,7 +34,7 @@ def model_selection(
         batch_size=32,
         shuffle=True,
         hyperparams_path='hyperparams/hyperparams.json',
-        model_path='models/vae.torch',
+        model_path='models/model.torch',
         tqdm=None,
         retrain=True,
 ):
@@ -97,7 +97,7 @@ def model_selection(
         trainer = trainer_constructor(model, tr_dataloader, vl_dataloader, device=device)
         if not os.path.exists(model_path):
             _, vl_loss = trainer(epochs=epochs, **trainer_hyperparams)
-            torch.save(model.state_dict(), model_path)
+            torch.save(model, model_path)
         else:
-            model.load_state_dict(torch.load(model_path))
+            model = torch.load(model_path)
         return model

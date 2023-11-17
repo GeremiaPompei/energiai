@@ -6,7 +6,7 @@ import torch
 
 class SifimDataset(torch.utils.data.Dataset):
 
-    def __init__(self, dir='dataset/cleaned/', timesteps=100, start=0, end=1, test=False):
+    def __init__(self, dir='dataset/cleaned/', timesteps=100, start=0, end=1, test=False, noise=0.1):
         datasets = []
 
         for filename in os.listdir(dir):
@@ -20,19 +20,14 @@ class SifimDataset(torch.utils.data.Dataset):
         self.x = torch.cat(datasets)
         self.y = torch.zeros(self.x.shape[0], self.x.shape[1], 1)
         if test:
-            half_ex = self.x.shape[0] // 2
             half_ts = timesteps // 2
             n_features = self.x.shape[-1]
 
-            """drift = torch.rand(half_ex).repeat(n_features, half_ts, 1).transpose(0, 2)
-            self.x[:half_ex, half_ts:] = (self.x[:half_ex, half_ts:] + drift) % 1
-            self.y[:half_ex, half_ts:] = 1"""
-
-            anomaly = torch.rand(half_ex, half_ts, n_features)
-            sparse = (torch.rand(half_ex, half_ts, 1) > 0.5)
+            anomaly = (torch.randn(self.x.shape[0], half_ts, n_features) - 0.5) * 2 * noise
+            sparse = (torch.rand(self.x.shape[0], half_ts, 1) > 0.5)
             anomaly[sparse.repeat(1, 1, n_features)] = 0
-            self.x[half_ex:, half_ts:] = self.x[half_ex:, half_ts:] + anomaly
-            self.y[half_ex:, half_ts:] = 1 - sparse.to(torch.float64)
+            self.x[:, half_ts:] = self.x[:, half_ts:] + anomaly
+            self.y[:, half_ts:] = 1 - sparse.to(torch.float64)
         self.y = self.y.squeeze().to(torch.int64)
 
         self.x = self.x.to(torch.float64)

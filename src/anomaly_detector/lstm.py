@@ -43,4 +43,4 @@ class LSTM(torch.nn.Module):
         else:
             e_std = e.unfold(1, self.window, 1).std(-1)
             res = torch.logical_or(-2 * self.sigma > e_std, e_std > 2 * self.sigma).to(torch.float64)
-            return res
+            return res, out.detach(), e_std.detach()
