@@ -1,7 +1,7 @@
 import itertools
 
 
-def gridsearch_generator(hyperparams_lists):
+def gridsearch_generator(**hyperparams_lists):
     return [dict(zip(hyperparams_lists.keys(), t)) for t in itertools.product(*hyperparams_lists.values())]
 
 

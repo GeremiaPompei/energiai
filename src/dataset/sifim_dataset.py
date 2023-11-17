@@ -25,14 +25,17 @@ class SifimDataset(torch.utils.data.Dataset):
             n_features = self.x.shape[-1]
 
             drift = torch.rand(half_ex).repeat(n_features, half_ts, 1).transpose(0, 2)
-            self.x[:half_ex, half_ts:] += drift
+            self.x[:half_ex, half_ts:] = (self.x[:half_ex, half_ts:] + drift) % 1
             self.y[:half_ex, half_ts:] = 1
 
-            self.x[half_ex:, half_ts:] += torch.rand(half_ex, half_ts, n_features)
+            anomaly = torch.rand(half_ex, half_ts, n_features)
+            self.x[half_ex:, half_ts:] = (self.x[half_ex:, half_ts:] + anomaly) % 1
             self.y[half_ex:, half_ts:] = 2
+        y = self.y.squeeze().to(torch.int64)
+        self.y = torch.nn.functional.one_hot(y, 3)
 
     def __len__(self):
-        return self.dataset.shape[0]
+        return self.x.shape[0]
 
     def __getitem__(self, idx):
         return self.x[idx], self.y[idx]

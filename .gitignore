@@ -4,3 +4,4 @@ venv
 .idea
 dataset
 hyperparams
+models

@@ -18,6 +18,7 @@ class VAETrainer:
     def __call__(self, epochs: int = 10, lr: float = 1e-3):
         self.model.train()
         optimizer = torch.optim.Adam(self.model.parameters(), lr=lr)
+        eval_criterion = torch.nn.CrossEntropyLoss()
         tr_loss, ts_loss = 0, 0
         for epoch in range(epochs):
             tr_loss, ts_loss = 0, 0
@@ -26,7 +27,7 @@ class VAETrainer:
             for batch_idx, (x, y) in enumerate(self.tr_loader):
                 optimizer.zero_grad()
                 x = x.to(self.device)
-                x_hat, mean, log_var = self.model(x)
+                x, x_hat, mean, log_var = self.model(x)
                 loss = self.__loss_function__(x, x_hat, mean, log_var)
                 tr_loss += loss.item()
                 loss.backward()
@@ -35,9 +36,9 @@ class VAETrainer:
 
             self.model.eval()
             for batch_idx, (x, y) in enumerate(self.ts_loader):
-                x = x.to(self.device)
-                x_hat, mean, log_var = self.model(x)
-                loss = (x - x_hat).pow(2).mean()
+                x, y = x.to(self.device), y.to(self.device)
+                p = self.model(x)
+                loss = 1 - (y[:, -p.shape[1]:].argmax(-1) - p.argmax(-1) == 0).to(torch.float64).mean() # reverse accuracy
                 ts_loss += loss.item()
             ts_loss = ts_loss / len(self.ts_loader)
 

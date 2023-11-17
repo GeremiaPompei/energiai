@@ -4,9 +4,6 @@ import os.path
 import torch
 from src.utility import log
 
-from src.dataset import SifimDataset
-from src.model import VAE
-from src.concept_drift.vae_trainer import VAETrainer
 from src.utility.fix_seed import fix_seed
 from src.utility.select_device import select_device
 
@@ -27,15 +24,23 @@ def __read_hyperparams_file__(filename, cache):
     return best_hyperparams, best_loss, cache
 
 
-def model_selection_pipeline(hyperparams_list, epochs=20, batch_size=32, shuffle=True, dataset_dir='dataset/cleaned/',
-                             hyperparams_path='hyperparams/hyperparams.json', tqdm=None):
+def model_selection(
+        hyperparams_list,
+        model_constructor,
+        trainer_constructor,
+        tr_dataset,
+        vl_dataset,
+        epochs=20,
+        batch_size=32,
+        shuffle=True,
+        hyperparams_path='hyperparams/hyperparams.json',
+        model_path='models/vae.torch',
+        tqdm=None,
+        retrain=True,
+):
     filename = hyperparams_path
     fix_seed()
     device = select_device()
-
-    # dataset
-    tr_dataset = SifimDataset(dir=dataset_dir, end=0.8)
-    vl_dataset = SifimDataset(dir=dataset_dir, start=0.8)
 
     best_hyperparams, best_loss, cache = None, None, {}
     if os.path.exists(filename):
@@ -52,10 +57,10 @@ def model_selection_pipeline(hyperparams_list, epochs=20, batch_size=32, shuffle
         vl_dataloader = torch.utils.data.DataLoader(vl_dataset, batch_size=batch_size, shuffle=shuffle)
 
         # model
-        model = VAE(tr_dataset.dataset.shape[-1], **model_hyperparams, device=device)
+        model = model_constructor(tr_dataset.x.shape[-1], **model_hyperparams, device=device)
 
         # trainer
-        trainer = VAETrainer(model, tr_dataloader, vl_dataloader, device=device)
+        trainer = trainer_constructor(model, tr_dataloader, vl_dataloader, device=device)
 
         if json.dumps(hyperparams) in cache:
             vl_loss = cache[json.dumps(hyperparams)]
@@ -80,3 +85,19 @@ def model_selection_pipeline(hyperparams_list, epochs=20, batch_size=32, shuffle
             ), fn)
 
     log.info(f'Final best loss: {best_loss}, best hyperparams: {best_hyperparams}')
+
+    if retrain:
+        model_hyperparams = {k.replace('model_', ''): v for k, v in best_hyperparams.items() if 'model_' in k}
+        trainer_hyperparams = {k.replace('trainer_', ''): v for k, v in best_hyperparams.items() if 'trainer_' in k}
+        tr_dataloader = torch.utils.data.DataLoader(tr_dataset, batch_size=batch_size, shuffle=shuffle)
+        vl_dataloader = torch.utils.data.DataLoader(vl_dataset, batch_size=batch_size, shuffle=shuffle)
+        # model
+        model = model_constructor(tr_dataset.x.shape[-1], **model_hyperparams, device=device)
+        # trainer
+        trainer = trainer_constructor(model, tr_dataloader, vl_dataloader, device=device)
+        if not os.path.exists(model_path):
+            _, vl_loss = trainer(epochs=epochs, **trainer_hyperparams)
+            torch.save(model.state_dict(), model_path)
+        else:
+            model.load_state_dict(torch.load(model_path))
+        return model
