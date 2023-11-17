@@ -38,7 +38,7 @@ class LSTMTrainer:
                 p, _, _ = self.model(x, y)
                 labels = labels[:, -p.shape[1]:]
                 ts_loss += criterion(labels, p).item()
-                ts_acc += (labels.argmax(-1) - p.argmax(-1) == 0).to(torch.float64).mean()
+                ts_acc += (labels - p == 0).to(torch.float64).mean()
             ts_loss = ts_loss / len(self.ts_loader)
             ts_acc = ts_acc / len(self.ts_loader)
             ts_acc = f'{round(ts_acc.item() * 100, 2)}%'

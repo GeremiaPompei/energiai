@@ -65,7 +65,7 @@ def model_selection(
         if json.dumps(hyperparams) in cache:
             vl_loss = cache[json.dumps(hyperparams)]
         else:
-            _, vl_loss = trainer(epochs=epochs, **trainer_hyperparams)
+            _, vl_loss = trainer(**trainer_hyperparams)
 
         cache[json.dumps(hyperparams)] = vl_loss
         if os.path.exists(filename):
@@ -96,7 +96,7 @@ def model_selection(
         # trainer
         trainer = trainer_constructor(model, tr_dataloader, vl_dataloader, device=device)
         if not os.path.exists(model_path):
-            _, vl_loss = trainer(epochs=epochs, **trainer_hyperparams)
+            _, vl_loss = trainer(**trainer_hyperparams)
             torch.save(model, model_path)
         else:
             model = torch.load(model_path)

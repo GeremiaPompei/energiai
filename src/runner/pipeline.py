@@ -1,8 +1,10 @@
 import torch
 
-from src.anomaly_detector.anomaly_detector import AnomalyDetector
+from src.anomaly_detector.lstm import LSTM
+from src.anomaly_detector.lstm_trainer import LSTMTrainer
 from src.concept_drift_detector.concept_drift_detector import ConceptDriftDetector
 from src.dataset import SifimDataset
+from src.detector.model_selection import model_selection
 from src.plot.timeseries_analysis import plot_with_thresholds
 from src.utility import fix_seed, select_device, gridsearch_generator
 
@@ -15,19 +17,22 @@ def pipeline():
     tr_dataset = SifimDataset(start=0.0, end=0.6)
     vl_dataset = SifimDataset(start=0.6, end=0.8, test=True)
     ts_dataset = SifimDataset(start=0.8, end=1.0, test=True, noise=0.01)
+    x_ts, y_ts = ts_dataset.x[:, :-1], ts_dataset.x[:, 1:]
 
     # train concept anomaly_detector detector
-    ad = AnomalyDetector(
+    lstm = model_selection(
         hyperparams_list=gridsearch_generator(
-            hidden_state=[100],  # , 200, 300],
-            ff_size=[300],  # , 500, 1000],
-            window=[10],
-            n_layers=[1],  # , 2, 3],
-            bidirectional=[False],  # , True],
+            model_hidden_state=[100],  # , 200, 300],
+            model_ff_size=[300],  # , 500, 1000],
+            model_window=[10],
+            model_n_layers=[1],  # , 2, 3],
+            model_bidirectional=[False],  # , True],
+            trainer_epochs=[20],
         ),
+        model_constructor=LSTM,
+        trainer_constructor=LSTMTrainer,
         tr_dataset=tr_dataset,
         vl_dataset=vl_dataset,
-        epochs=20,
         batch_size=32,
         shuffle=True,
         hyperparams_path='hyperparams/ad_hyperparams.json',
@@ -37,24 +42,19 @@ def pipeline():
     )
 
     # test phase
-    ad_labels, ad_predictions, ad_std = ad.predict(ts_dataset)
-
-    """i = 0
-    window = 75
-    for f in range(1):
-        y, p = ts_dataset.x[i, -window:, f], ad_predictions[i, -window:, f]
-        plot_with_thresholds(y, p)"""
+    ad_labels, ad_predictions, ad_std = lstm(x_ts, y_ts)
 
     # plot
     window = 75
-    for i in range(5):
-        std = ad_std[i, -window:]
-        m2s = torch.ones_like(std) * ad.model.sigma.item() * (-2)
-        p2s = torch.ones_like(std) * ad.model.sigma.item() * (+2)
-        plot_with_thresholds('Standard deviation', [std, m2s, p2s])  # standard deviation
+    i = 0
+    f = 0
 
-        for f in range(1):
-            y, p = ts_dataset.x[i, -window:, f], ad_predictions[i, -window:, f]
-            plot_with_thresholds('Timeseries prediction', [y, p]) # timeseries and prediction of lstm
+    std = ad_std[i, -window:]
+    m2s = torch.ones_like(std) * lstm.sigma.item() * (-2)
+    p2s = torch.ones_like(std) * lstm.sigma.item() * (+2)
+    plot_with_thresholds('Standard deviation', [std, m2s, p2s])  # standard deviation
 
-        plot_with_thresholds('Labels', [ts_dataset.y[i, -ad_labels.shape[1]:], ad_labels[i]]) # labels
+    y, p = ts_dataset.x[i, -window:, f], ad_predictions[i, -window:, f]
+    plot_with_thresholds('Timeseries prediction', [y, p])  # timeseries and prediction of lstm
+
+    plot_with_thresholds('Labels', [ts_dataset.y[i, -ad_labels.shape[1]:], ad_labels[i]])  # labels
