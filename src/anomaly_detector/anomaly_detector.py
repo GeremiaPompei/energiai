@@ -1,18 +1,18 @@
 import torch
 
-from src.concept_drift_detector.vae import VAE
-from src.concept_drift_detector.vae_trainer import VAETrainer
+from src.anomaly_detector.lstm import LSTM
+from src.anomaly_detector.lstm_trainer import LSTMTrainer
 from src.detector.detector import Detector
 from src.detector.model_selection import model_selection
 
 
-class ConceptDriftDetector(Detector):
+class AnomalyDetector(Detector):
 
     def _train(self, *args, **kwargs):
         self.model = model_selection(
             *args,
-            model_constructor=VAE,
-            trainer_constructor=VAETrainer,
+            model_constructor=LSTM,
+            trainer_constructor=LSTMTrainer,
             **kwargs,
         )
 
@@ -24,4 +24,4 @@ class ConceptDriftDetector(Detector):
             z = self.model.reparameterization(m, v).to(torch.float64).abs()
             I = torch.eye(z.shape[-2]).to(self.device).to(torch.float64)
             dist = (z.transpose(-1, -2) @ I @ z).sqrt()
-            print(dist.mean()) # TODO
+            print(dist.mean())

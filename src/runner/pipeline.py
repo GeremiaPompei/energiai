@@ -1,3 +1,4 @@
+from src.anomaly_detector.anomaly_detector import AnomalyDetector
 from src.concept_drift_detector.concept_drift_detector import ConceptDriftDetector
 from src.dataset import SifimDataset
 from src.utility import fix_seed, select_device, gridsearch_generator
@@ -12,28 +13,25 @@ def pipeline():
     vl_dataset = SifimDataset(start=0.6, end=0.8, test=True)
     ts_dataset = SifimDataset(start=0.8, end=1.0, test=True)
 
-    # train concept drift detector
-    cdd = ConceptDriftDetector(
+    # train concept anomaly_detector detector
+    ad = AnomalyDetector(
         hyperparams_list=gridsearch_generator(
+            hidden_state=[100, 200, 300],
+            ff_size=[300, 500, 1000],
             window=[10],
-            hidden_dim=[200],
-            latent_dim=[10],
-            n_layers=[0],
-            bias_perc_thresh=[-0.8]
+            n_layers=[1, 2, 3],
+            bidirectional=[False, True],
         ),
         tr_dataset=tr_dataset,
         vl_dataset=vl_dataset,
-        epochs=20,
+        epochs=10,
         batch_size=32,
         shuffle=True,
-        hyperparams_path='hyperparams/hyperparams.json',
+        hyperparams_path='hyperparams/ad_hyperparams.json',
         tqdm=None,
         retrain=True,
     )
 
-    # train concept anomaly_detector detector
-
     # test phase
-    cdd.predict(ts_dataset)
 
     # plot results

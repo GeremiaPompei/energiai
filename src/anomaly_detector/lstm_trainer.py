@@ -16,24 +16,32 @@ class LSTMTrainer:
         criterion = torch.nn.MSELoss()
         tr_loss, ts_loss = 0, 0
         for epoch in range(epochs):
-            tr_loss, ts_loss = 0, 0
+            tr_loss, ts_loss, ts_acc = 0, 0, 0
 
             self.model.train()
-            for batch_idx, (x, y) in enumerate(self.tr_loader):
+            self.model.reset()
+            for batch_idx, (data, _) in enumerate(self.tr_loader):
                 optimizer.zero_grad()
-                p = self.model(x.to(self.device))
-                loss = criterion(y.to(self.device), p)
+                data = data.to(self.device)
+                x, y = data[:, 1:], data[:, :-1]
+                p = self.model(x, y)
+                loss = criterion(y, p)
                 tr_loss += loss.item()
                 loss.backward()
                 optimizer.step()
             tr_loss = tr_loss / len(self.tr_loader)
 
             self.model.eval()
-            for batch_idx, (x, y) in enumerate(self.ts_loader):
-                p = self.model(x.to(self.device))
-                loss = criterion()
-                ts_loss += loss.item(y.to(self.device), p)
+            for batch_idx, (data, labels) in enumerate(self.ts_loader):
+                data = data.to(self.device)
+                x, y = data[:, 1:], data[:, :-1]
+                p = self.model(x, y)
+                labels = labels[:, -p.shape[1]:]
+                ts_loss += criterion(labels, p).item()
+                ts_acc += (labels.argmax(-1) - p.argmax(-1) == 0).to(torch.float64).mean()
             ts_loss = ts_loss / len(self.ts_loader)
+            ts_acc = ts_acc / len(self.ts_loader)
+            ts_acc = f'{round(ts_acc.item() * 100, 2)}%'
 
-            log.info(f'Epoch {epoch + 1}/{epochs} => training loss: {tr_loss}, test loss: {ts_loss}')
+            log.info(f'Epoch {epoch + 1}/{epochs} => training loss: {tr_loss}, test loss: {ts_loss}, test accuracy: {ts_acc}')
         return tr_loss, ts_loss
