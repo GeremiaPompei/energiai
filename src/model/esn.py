@@ -1,6 +1,8 @@
 import torch
 import torch.nn
 
+from src.model.anomaly_detector import AnomalyDetector
+
 
 class WeightsInitializer:
 
@@ -95,7 +97,7 @@ class ReservoirLayer(torch.nn.Module):
         return torch.stack(states)
 
 
-class ESN(torch.nn.Module):
+class ESN(AnomalyDetector):
 
     def __init__(
             self,
@@ -104,11 +106,8 @@ class ESN(torch.nn.Module):
             window: int = 10,
             **hyperparams: dict,
     ):
-        super(ESN, self).__init__()
+        super(ESN, self).__init__(window)
         self.hyperparams = hyperparams
-        self.window = window
-        self.sigma = 0
-        self.tr_data = 0
         self.device = device
         initializer = WeightsInitializer(hyperparams['seed'])
 
@@ -121,29 +120,12 @@ class ESN(torch.nn.Module):
         self.A, self.B = None, None
         self.reset_AB()
 
-    def __loss__(self, y, p):
-        return ((y - p) ** 2).mean(-1)
-
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         x = x.transpose(0, 1)
         h = self.reservoir(x)
         out = h @ self.readout
         out = out.transpose(0, 1)
         return out
-
-    def register_std(self, x, y):
-        out = self(x)
-        e = self.__loss__(y, out)
-        tot = self.tr_data + 1
-        self.sigma = (self.sigma * self.tr_data + e.std()) / tot
-        self.tr_data = tot
-
-    def predict(self, x, y):
-        out = self(x)
-        e = self.__loss__(y, out)
-        e_std = e.unfold(1, self.window, 1).std(-1)
-        res = torch.logical_or(-2 * self.sigma > e_std, e_std > 2 * self.sigma).to(torch.float64)
-        return res, out.detach(), e_std.detach()
 
     def reset_AB(self):
         self.A = None

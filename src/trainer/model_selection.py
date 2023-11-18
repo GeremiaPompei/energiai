@@ -30,10 +30,12 @@ def model_selection(
         trainer_constructor,
         tr_dataset,
         vl_dataset,
+        ts_dataset,
         batch_size=32,
         shuffle=True,
         hyperparams_path='hyperparams/hyperparams.json',
         model_path='model/model.torch',
+        history_path='history/history.json',
         tqdm=None,
         retrain=True,
 ):
@@ -60,11 +62,10 @@ def model_selection(
 
         # trainer
         trainer = trainer_constructor(model, tr_dataloader, vl_dataloader, device=device)
-
         if json.dumps(hyperparams) in cache:
             vl_loss = cache[json.dumps(hyperparams)]
         else:
-            _, vl_loss = trainer(**trainer_hyperparams)
+            _, vl_loss, _, _ = trainer(**trainer_hyperparams)
 
         cache[json.dumps(hyperparams)] = vl_loss
         if os.path.exists(filename):
@@ -89,13 +90,21 @@ def model_selection(
         model_hyperparams = {k.replace('model_', ''): v for k, v in best_hyperparams.items() if 'model_' in k}
         trainer_hyperparams = {k.replace('trainer_', ''): v for k, v in best_hyperparams.items() if 'trainer_' in k}
         tr_dataloader = torch.utils.data.DataLoader(tr_dataset, batch_size=batch_size, shuffle=shuffle)
-        vl_dataloader = torch.utils.data.DataLoader(vl_dataset, batch_size=batch_size, shuffle=shuffle)
+        ts_dataloader = torch.utils.data.DataLoader(ts_dataset, batch_size=batch_size, shuffle=shuffle)
         # model
         model = model_constructor(tr_dataset.x.shape[-1], **model_hyperparams, device=device)
         # trainer
-        trainer = trainer_constructor(model, tr_dataloader, vl_dataloader, device=device)
+        trainer = trainer_constructor(model, tr_dataloader, ts_dataloader, device=device)
         if model_path is None or not os.path.exists(model_path):
-            _, vl_loss = trainer(**trainer_hyperparams)
+            tr_loss, ts_loss, tr_time, scores = trainer(**trainer_hyperparams)
+            history = dict(tr_time=tr_time, tr_loss=tr_loss, ts_loss=ts_loss, **scores)
+            total_history = {}
+            if os.path.exists(history_path):
+                total_history = json.load(open(history_path))
+            total_history[model.__class__.__name__] = history
+            with open(history_path, 'w') as fp:
+                json.dump(total_history, fp)
+
             if model_path is not None:
                 torch.save(model, model_path)
         else:
