@@ -65,7 +65,7 @@ def model_selection(
         if json.dumps(hyperparams) in cache:
             vl_loss = cache[json.dumps(hyperparams)]
         else:
-            _, vl_loss, _, _ = trainer(**trainer_hyperparams)
+            vl_loss = trainer(**trainer_hyperparams)['ts_loss']
 
         cache[json.dumps(hyperparams)] = vl_loss
         if os.path.exists(filename):
@@ -96,8 +96,7 @@ def model_selection(
         # trainer
         trainer = trainer_constructor(model, tr_dataloader, ts_dataloader, device=device)
         if model_path is None or not os.path.exists(model_path):
-            tr_loss, ts_loss, tr_time, scores = trainer(**trainer_hyperparams)
-            history = dict(tr_time=tr_time, tr_loss=tr_loss, ts_loss=ts_loss, **scores)
+            history = trainer(**trainer_hyperparams)
             total_history = {}
             if os.path.exists(history_path):
                 total_history = json.load(open(history_path))
