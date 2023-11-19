@@ -5,6 +5,8 @@ import numpy as np
 import pandas as pd
 from functools import reduce
 
+from src.utility.scaler import scale
+
 columns_blacklist = ['timestamp', 'id', 'sub_id', 'contatore_di_installazione', 'contatore_di_misura',
                      'numero_seriale']
 
@@ -35,7 +37,8 @@ def preprocessing_pipeline(raw_dir: str = 'dataset/raw', output_dir: str = 'data
         if not os.path.exists(path):
             os.mkdir(path)
 
-    with open(f'{normalization_subdir}/scale_factors.json', 'w') as fp:
+    norm_path = f'{normalization_subdir}/scale_factors.json'
+    with open(norm_path, 'w') as fp:
         json.dump(
             dict(
                 mean=X_mean,
@@ -46,6 +49,5 @@ def preprocessing_pipeline(raw_dir: str = 'dataset/raw', output_dir: str = 'data
         )
 
     for filename, dataset in datasets.items():
-        dataset = (dataset - X_mean) / X_std
-        dataset = (dataset - X_min) / (X_max - X_min)
+        dataset = scale(dataset, norm_path=norm_path)
         pd.DataFrame(dataset).to_csv(f'{cleaned_subdir}/{filename}')

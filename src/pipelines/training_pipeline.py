@@ -38,7 +38,6 @@ def training_pipeline():
             hyperparams_list=gridsearch_generator(
                 model_hidden_state=[100, 200, 300],
                 model_ff_size=[300, 500, 1000],
-                model_window=[10],
                 model_n_layers=[1, 2, 3],
                 trainer_epochs=[20],
             ),
