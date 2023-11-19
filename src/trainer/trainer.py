@@ -19,7 +19,7 @@ class Trainer:
     def __call__(self, *args, **kwargs):
         self.model.train()
         criterion = torch.nn.MSELoss()
-        emissions_tracker = EmissionsTracker()
+        emissions_tracker = EmissionsTracker(log_level="critical", save_to_file=False)
 
         emissions_tracker.start()
         start = time.time()
