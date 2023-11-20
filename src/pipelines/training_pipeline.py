@@ -52,10 +52,10 @@ def training_pipeline():
             tr_dataset=tr_dataset,
             vl_dataset=vl_dataset,
             ts_dataset=ts_dataset,
-            batch_size=128,
+            batch_size=16,
             shuffle=True,
             hyperparams_path=f'hyperparams/{name}_hyperparams.json',
-            model_path=f'models/{name}.torch',
+            model_path=None,  # f'models/{name}.torch',
             tqdm=None,
             retrain=True,
         )
