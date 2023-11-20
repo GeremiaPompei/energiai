@@ -1,5 +1,5 @@
 import torch.nn
-
+import torch
 
 class AnomalyDetector(torch.nn.Module):
 
@@ -16,6 +16,7 @@ class AnomalyDetector(torch.nn.Module):
         self.sigma = 0
         self.tr_data = 0
 
+    @torch.no_grad()
     def register_std(self, x, y):
         out = self(x)
         e = self._loss_(y, out)
@@ -23,6 +24,7 @@ class AnomalyDetector(torch.nn.Module):
         self.sigma = (self.sigma * self.tr_data + e.std()) / tot
         self.tr_data = tot
 
+    @torch.no_grad()
     def predict(self, x, y):
         out = self(x)
         e = self._loss_(y, out)
