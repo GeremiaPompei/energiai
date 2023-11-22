@@ -103,10 +103,9 @@ class ESN(AnomalyDetector):
             self,
             in_size: int,
             device: str = 'cpu',
-            window: int = 10,
             **hyperparams: dict,
     ):
-        super(ESN, self).__init__(window)
+        super(ESN, self).__init__(**hyperparams)
         self.hyperparams = hyperparams
         self.device = device
         initializer = WeightsInitializer(hyperparams['seed'])

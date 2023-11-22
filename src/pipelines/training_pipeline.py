@@ -5,6 +5,7 @@ from src.trainer.lstm_trainer import LSTMTrainer
 from src.dataset import SifimDataset
 from src.trainer.model_selection import model_selection
 from src.utility import fix_seed, select_device, gridsearch_generator
+from tqdm import tqdm
 
 
 def training_pipeline():
@@ -12,7 +13,7 @@ def training_pipeline():
     device = select_device()
 
     # dataset
-    noise = 0.1
+    noise = 0.005
     tr_dataset = SifimDataset(start=0.0, end=0.6)
     vl_dataset = SifimDataset(start=0.6, end=0.8, test=True, noise=noise)
     ts_dataset = SifimDataset(start=0.8, end=1, test=True, noise=noise)
@@ -20,8 +21,8 @@ def training_pipeline():
     configs = [
         ('ESN', dict(
             hyperparams_list=gridsearch_generator(
-                model_reservoir_size=[100],
-                model_alpha=[0.5, 0.1],
+                model_reservoir_size=[100, 200],
+                model_alpha=[0.5],
                 model_input_ratio=[0.7, 0.9],
                 model_spectral_radius=[1.2, 0.9],
                 model_input_sparsity=[0.5],
@@ -29,6 +30,8 @@ def training_pipeline():
                 model_regularization=[0.001, 0.1, 0.01],
                 model_n_layers=[2, 1],
                 model_washout=[100],
+                model_threshold_perc=[0.8, 1, 1.2],
+                model_window=[20, 50],
                 model_seed=[0]
             ),
             model_constructor=ESN,
@@ -36,10 +39,13 @@ def training_pipeline():
         ),),
         ('LSTM', dict(
             hyperparams_list=gridsearch_generator(
-                model_hidden_state=[100, 200, 300],
-                model_ff_size=[300, 500, 1000],
-                model_n_layers=[1, 2, 3],
-                trainer_epochs=[20],
+                model_hidden_state=[100, 200],
+                model_ff_size=[500, 1000],
+                model_n_layers=[1, 2],
+                model_threshold_perc=[0.8, 1, 1.2],
+                model_window=[20, 50],
+                trainer_epochs=[50],
+                trainer_lr=[1e-02, 1e-03, 1e-04]
             ),
             model_constructor=LSTM,
             trainer_constructor=LSTMTrainer,
@@ -55,7 +61,7 @@ def training_pipeline():
             batch_size=16,
             shuffle=True,
             hyperparams_path=f'hyperparams/{name}_hyperparams.json',
-            model_path=None,  # f'models/{name}.torch',
-            tqdm=None,
+            model_path=f'models/{name}.torch',
+            tqdm=tqdm,
             retrain=True,
         )

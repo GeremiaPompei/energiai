@@ -10,12 +10,12 @@ class LSTM(AnomalyDetector):
             input_size,
             hidden_state: int = 100,
             ff_size: int = 300,
-            window: int = 10,
             n_layers: int = 1,
             bidirectional: bool = False,
             device='cpu',
+            **hyperparams: dict,
     ):
-        super(LSTM, self).__init__(window)
+        super(LSTM, self).__init__(**hyperparams)
         self.lstm = torch.nn.LSTM(input_size, hidden_state, num_layers=n_layers, bidirectional=bidirectional,
                                   batch_first=True).to(torch.float64).to(device)
         self.ff1 = torch.nn.Linear(hidden_state, ff_size).to(torch.float64).to(device)

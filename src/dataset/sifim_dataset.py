@@ -18,7 +18,7 @@ class SifimDataset(torch.utils.data.Dataset):
                 datasets.append(dataset[init_size:end_size])
 
         self.x = torch.cat(datasets)
-        self.y = torch.zeros(self.x.shape[0], self.x.shape[1], 1)
+        self.y = torch.zeros_like(self.x)
         if test:
             half_ts = timesteps // 2
             n_features = self.x.shape[-1]
