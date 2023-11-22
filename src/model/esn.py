@@ -134,8 +134,8 @@ class ESN(AnomalyDetector):
     def compute_ab(self, x: torch.Tensor, y: torch.Tensor) -> tuple:
         h = self.reservoir(x)
         washout = self.hyperparams['washout']
-        h = h[washout:].reshape(-1, h.shape[-1])
-        y = y[washout:].reshape(-1, y.shape[-1])
+        h = h[:, washout:].reshape(-1, h.shape[-1])
+        y = y[:, washout:].reshape(-1, y.shape[-1])
         A = h.T @ y
         B = h.T @ h
         return A, B
