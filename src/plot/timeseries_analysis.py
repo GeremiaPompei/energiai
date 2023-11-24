@@ -25,11 +25,11 @@ def plot_with_thresholds(ax, title, data, data_labels=[], plot_label='', sigma=N
                 f'-{threshold_perc}\u03C3', color='g', fontsize=10, va='top', ha='left')
 
     if fault_indicator is not None:
-        ax.axvline(x=fault_indicator, color='b', linestyle='--', label='Fault')
+        ax.axvline(x=fault_indicator, color='b', linestyle='--', label='Fault Effective')
     # if fd:
     if fault_detection_indicator is not None:
         ax.axvline(x=fault_detection_indicator, color='r',
-                   linestyle='--', label='Fault Detection')
+                   linestyle='--', label='Fault Predicted')
 
     # Aggiunta di etichette e titolo
     ax.set_xlabel('Time')
@@ -88,7 +88,7 @@ def create_subplots(
                 [std],
                 sigma=model.sigma[f].item(),
                 threshold_perc=model.threshold_perc,
-                data_labels='error \u03C3',
+                data_labels=['q'],
                 plot_label='\u03C3',
                 fault_indicator=treshold_eff,
                 fault_detection_indicator=treshold_pred,
@@ -102,7 +102,7 @@ def create_subplots(
                 fault_indicator=treshold_eff,
                 fault_detection_indicator=treshold_pred,
                 plot_label=unit,
-                data_labels=["effective", "prediction"],
+                data_labels=["Timeseries Effective", "Timeseries Prediction"],
             )  # timeseries effective and prediction
             plt.tight_layout()
 
