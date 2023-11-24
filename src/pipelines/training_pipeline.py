@@ -3,12 +3,12 @@ from src.model.lstm import LSTM
 from src.trainer.esn_trainer import ESNTrainer
 from src.trainer.lstm_trainer import LSTMTrainer
 from src.dataset import SifimDataset
-from src.trainer.model_selection import model_selection
+from src.trainer.model_selection import model_selection, retraining
 from src.utility import fix_seed, select_device, gridsearch_generator
 from tqdm import tqdm
 
 
-def training_pipeline():
+def training_pipeline(do_model_selection=False):
     fix_seed()
     device = select_device()
 
@@ -53,15 +53,24 @@ def training_pipeline():
     ]
 
     for name, config in configs:
-        model_selection(
-            **config,
+        if do_model_selection:
+            model_selection(
+                **config,
+                tr_dataset=tr_dataset,
+                vl_dataset=vl_dataset,
+                batch_size=16,
+                shuffle=True,
+                hyperparams_path=f'hyperparams/{name}_hyperparams.json',
+                tqdm=tqdm,
+            )
+        retraining(
+            model_constructor=config['model_constructor'],
+            trainer_constructor=config['trainer_constructor'],
             tr_dataset=tr_dataset,
-            vl_dataset=vl_dataset,
             ts_dataset=ts_dataset,
             batch_size=16,
             shuffle=True,
             hyperparams_path=f'hyperparams/{name}_hyperparams.json',
             model_path=f'models/{name}.torch',
-            tqdm=tqdm,
-            retrain=True,
+            history_path='history/history.json',
         )
