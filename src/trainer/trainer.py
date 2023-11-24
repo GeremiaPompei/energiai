@@ -3,7 +3,7 @@ import time
 import torch
 from src.utility import log
 from src.utility.metrics import compute_scores
-from codecarbon import EmissionsTracker
+# from codecarbon import EmissionsTracker
 
 
 class Trainer:
@@ -19,13 +19,13 @@ class Trainer:
     def __call__(self, *args, **kwargs):
         self.model.train()
         criterion = torch.nn.MSELoss()
-        emissions_tracker = EmissionsTracker(log_level="critical", save_to_file=False)
+        # emissions_tracker = EmissionsTracker(log_level="critical", save_to_file=False)
 
-        emissions_tracker.start()
+        # emissions_tracker.start()
         start = time.time()
         tr_loss = self.train_model(*args, criterion, **kwargs)
         tr_time = time.time() - start
-        emissions = emissions_tracker.stop()
+        emissions = 0# emissions_tracker.stop()
 
         for batch_idx, (data, _) in enumerate(self.tr_loader):
             data = data.to(self.device)
