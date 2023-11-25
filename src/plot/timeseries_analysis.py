@@ -67,7 +67,7 @@ def create_subplots(
     for key, label, unit in feature:
         f = map_label[key]
 
-        _, axs = plt.subplots(2, len(models), figsize=(16, 6 * len(models)))
+        _, axs = plt.subplots(2, len(models), figsize=(13, 5 * len(models)))
 
         for j, model in enumerate(models):
             ad_labels, ad_predictions, ad_std = model.predict(x_ts, y_ts)
@@ -84,7 +84,7 @@ def create_subplots(
             model_name = model.__class__.__name__
             plot_with_thresholds(
                 axs[0] if len(list(axs.shape)) == 1 else axs[j, 0],
-                f'{model_name} Standard deviation (\u03C3): {label}',
+                f'{model_name} Standard deviation (q): {label}',
                 [std],
                 sigma=model.sigma[f].item(),
                 threshold_perc=model.threshold_perc,
