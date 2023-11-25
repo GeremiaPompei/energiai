@@ -8,7 +8,7 @@ from src.utility import fix_seed, select_device, gridsearch_generator
 from tqdm import tqdm
 
 
-def training_pipeline(do_model_selection=False):
+def training_pipeline(do_model_selection=True):
     fix_seed()
     device = select_device()
 

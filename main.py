@@ -3,7 +3,7 @@ from src.pipelines.training_pipeline import training_pipeline
 
 
 def main():
-    # preprocessing_pipeline()
+    preprocessing_pipeline()
     training_pipeline()
 
 

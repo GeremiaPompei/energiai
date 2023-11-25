@@ -16,13 +16,13 @@ def preprocessing_pipeline(raw_dir: str = 'dataset/raw', output_dir: str = 'data
     datasets = {}
     for filename in os.listdir(raw_dir):
         # import
-        df_raw = pd.read_csv(f'{raw_dir}/{filename}')
+        df_raw = pd.read_csv(f'{raw_dir}/{filename}').sort_values('timestamp')
 
         # cleaning
         df = df_raw[sifim_features]
         df = df[reduce(lambda x, y: x & y, [
                        df[cs] > threshold_current for cs in columns_switchoff])]
-        datasets[filename] = df.to_numpy()[::-1]
+        datasets[filename] = df.to_numpy()
     X = np.concatenate(list(datasets.values()))
 
     # standardization
