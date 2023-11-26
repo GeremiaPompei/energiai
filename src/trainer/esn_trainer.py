@@ -3,7 +3,7 @@ from src.trainer.trainer import Trainer
 
 class ESNTrainer(Trainer):
 
-    def train_model(self, criterion):
+    def train_model(self):
         tr_loss = 0
         self.model.train()
         for batch_idx, (data, _) in enumerate(self.tr_loader):
@@ -15,6 +15,6 @@ class ESNTrainer(Trainer):
             self.model.fit_from_ab(A, B)
             x, y = data[:, 1:], data[:, :-1]
             p = self.model(x)
-            tr_loss += criterion(y, p).item()
+            tr_loss += self.criterion(y, p).item()
         tr_loss = tr_loss / len(self.tr_loader)
         return tr_loss
