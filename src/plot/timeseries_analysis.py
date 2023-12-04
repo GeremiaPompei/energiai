@@ -1,12 +1,13 @@
 import matplotlib.pyplot as plt
 import numpy as np
 from src.utility.constants import sifim_features
+from src.utility.scaler import rescale
 
 
 def plot_with_thresholds(ax, title, data, data_labels=[], plot_label='', sigma=None, fault_indicator=None, fault_detection_indicator=None, ts_sec=30, threshold_perc=2):
 
     x_ticks = list(range(0, len(data[0]) + 1, 10))
-    ax.set_xticks(x_ticks, [i * ts_sec for i in range(len(x_ticks))])
+    ax.set_xticks(x_ticks, [i * ts_sec for i in x_ticks])
     # Creazione del grafico
     for i, d in enumerate(data):
         ax.plot(d, label=f'{data_labels[i]}', linestyle='-')
@@ -44,7 +45,8 @@ def plot_with_thresholds(ax, title, data, data_labels=[], plot_label='', sigma=N
 def create_subplots(
     dataset,
     models,
-    zoom=50,
+    zoom_left=50,
+    zoom_right=50,
     feature=[
         ('energia_apparente_importata_sistema',
          'System imported apparent energy effective', 'kWh'),
@@ -61,8 +63,8 @@ def create_subplots(
 ):
     map_label = {l: i for i, l in enumerate(sifim_features)}
     middle = dataset.x.shape[1] // 2
-    start = - (middle + zoom)
-    end = - (middle - zoom)
+    start = - (middle + zoom_left)
+    end = - (middle - zoom_right)
     x_ts, y_ts = dataset.x[:, :-1], dataset.x[:, 1:]
     for key, label, unit in feature:
         f = map_label[key]
@@ -97,8 +99,7 @@ def create_subplots(
             plot_with_thresholds(
                 axs[1] if len(list(axs.shape)) == 1 else axs[j, 1],
                 f'{model_name} Timeseries prediction: {label}',
-                [dataset.x[n_example, start:end, f],
-                    ad_predictions[n_example, start:end, f]],
+                [rescale(i) for i in [dataset.x[n_example, start:end, f], ad_predictions[n_example, start:end, f]]],
                 fault_indicator=treshold_eff,
                 fault_detection_indicator=treshold_pred,
                 plot_label=unit,
