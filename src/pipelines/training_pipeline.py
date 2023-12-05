@@ -1,7 +1,7 @@
 from src.model.esn import ESN
 from src.model.lstm import LSTM
-from src.trainer.esn_trainer import ESNTrainer
-from src.trainer.lstm_trainer import LSTMTrainer
+from src.trainer.ridge_regression_trainer import RidgeRegressionTrainer
+from src.trainer.bptt_trainer import BPTTTrainer
 from src.dataset import SifimDataset
 from src.trainer.model_selection import model_selection, retraining
 from src.utility import fix_seed, select_device, gridsearch_generator
@@ -32,23 +32,44 @@ def training_pipeline(do_model_selection=True):
                 model_washout=[100],
                 model_threshold_perc=[0.8, 1, 1.2],
                 model_window=[20, 50],
-                model_seed=[0]
+                model_seed=[0],
+                model_requires_grad=[False],
             ),
             model_constructor=ESN,
-            trainer_constructor=ESNTrainer,
+            trainer_constructor=RidgeRegressionTrainer,
+        ),),
+        ('ESN_BPTT', dict(
+            hyperparams_list=gridsearch_generator(
+                model_reservoir_size=[100, 200],
+                model_alpha=[0.5],
+                model_input_ratio=[0.7, 0.9],
+                model_spectral_radius=[1.2, 0.9],
+                model_input_sparsity=[0.5],
+                model_reservoir_sparsity=[0.9],
+                model_regularization=[0.001, 0.1, 0.01],
+                model_n_layers=[2, 1],
+                model_washout=[100],
+                model_threshold_perc=[0.8, 1, 1.2],
+                model_window=[20, 50],
+                model_seed=[0],
+                model_requires_grad=[True],
+                trainer_epochs=[50],
+                trainer_lr=[1e-02, 1e-03, 1e-04]
+            ),
+            model_constructor=ESN,
+            trainer_constructor=BPTTTrainer,
         ),),
         ('LSTM', dict(
             hyperparams_list=gridsearch_generator(
-                model_hidden_state=[100, 200],
-                model_ff_size=[500, 1000],
-                model_n_layers=[1, 2],
+                model_hidden_state=[100, 200, 300],
+                model_n_layers=[4, 3, 2, 1],
                 model_threshold_perc=[0.8, 1, 1.2],
                 model_window=[20, 50],
                 trainer_epochs=[50],
                 trainer_lr=[1e-02, 1e-03, 1e-04]
             ),
             model_constructor=LSTM,
-            trainer_constructor=LSTMTrainer,
+            trainer_constructor=BPTTTrainer,
         ),),
     ]
 

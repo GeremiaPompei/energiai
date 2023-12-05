@@ -6,8 +6,10 @@ from src.model.anomaly_detector import AnomalyDetector
 
 class WeightsInitializer:
 
-    def __init__(self, seed: int):
+    def __init__(self, requires_grad: bool = False, seed: int = 0, dtype: torch.dtype = torch.float64):
         self.generator = torch.Generator().manual_seed(seed)
+        self.requires_grad = requires_grad
+        self.dtype = dtype
 
     def __call__(
             self,
@@ -15,39 +17,10 @@ class WeightsInitializer:
             ratio: float = 1,
             sparsity: float = 0
     ) -> torch.Tensor:
-        weights = (torch.rand(shape, generator=self.generator, requires_grad=False) * 2 - 1).to(torch.float64) * ratio
+        weights = (torch.rand(shape, generator=self.generator, requires_grad=self.requires_grad) * 2 - 1).to(
+            self.dtype) * ratio
         weights[torch.rand(weights.shape, generator=self.generator) < sparsity] = 0
         return weights
-
-
-class Reservoir(torch.nn.Module):
-
-    def __init__(
-            self,
-            in_size: int,
-            hyperparams: dict,
-            initializer: WeightsInitializer,
-            device: str = 'cpu'
-    ):
-        super(Reservoir, self).__init__()
-        self.hyperparams = hyperparams
-        self.layers = [
-            ReservoirLayer(
-                in_size if l == 0 else hyperparams['reservoir_size'],
-                hyperparams,
-                initializer,
-                device
-            ) for l in range(self.hyperparams['n_layers'])
-        ]
-
-    @torch.no_grad()
-    def forward(self, x: torch.Tensor):
-        states = []
-        for layer in self.layers:
-            x = layer(x)
-            states.append(x)
-        states = torch.cat(states, dim=-1)
-        return states
 
 
 class ReservoirLayer(torch.nn.Module):
@@ -67,15 +40,21 @@ class ReservoirLayer(torch.nn.Module):
             (in_size, hyperparams['reservoir_size']),
             ratio=hyperparams['input_ratio'],
             sparsity=hyperparams['input_sparsity']
-        ).to(device)
+        )
 
-        self.W_hh = self.__init_reservoir(initializer).to(device)
+        self.W_hh = self.__init_reservoir(initializer)
 
         self.bias = initializer(
             (1, hyperparams['reservoir_size']),
             ratio=hyperparams['input_ratio'],
             sparsity=hyperparams['input_sparsity']
-        ).to(device)
+        )
+
+        params = [self.W_in, self.W_hh, self.bias]
+        for i in range(len(params)):
+            params[i] = params[i].to(device)
+            if initializer.requires_grad:
+                params[i] = torch.nn.Parameter(params[i])
 
     def __init_reservoir(self, initializer: WeightsInitializer) -> torch.Tensor:
         weights = initializer(
@@ -83,18 +62,49 @@ class ReservoirLayer(torch.nn.Module):
             sparsity=self.hyperparams['reservoir_sparsity']
         )
         max_eig = torch.linalg.eigvals(weights).abs().max()
-        weights *= self.hyperparams['spectral_radius'] / max_eig
+        weights.data *= self.hyperparams['spectral_radius'] / max_eig
         return weights
 
     @torch.no_grad()
     def forward(self, x: torch.Tensor) -> torch.Tensor:
-        h = torch.zeros((x.size(dim=1), self.W_hh.size(dim=0))).to(torch.float64).to(self.device)
+        h = torch.zeros((x.size(dim=1), self.W_hh.size(dim=0))).to(x.dtype).to(self.device)
         alpha = self.hyperparams['alpha']
-        states = []
-        for x_i in x:
+        states = torch.zeros(x.shape[0], h.shape[0], h.shape[1]).to(x.dtype).to(self.device)
+        for i, x_i in enumerate(x):
             h = (1 - alpha) * h + alpha * torch.tanh(x_i @ self.W_in + h @ self.W_hh + self.bias)
-            states.append(h)
-        return torch.stack(states)
+            states[i, :, :] = h
+        return states
+
+
+class Reservoir(torch.nn.Module):
+
+    def __init__(
+            self,
+            in_size: int,
+            hyperparams: dict,
+            initializer: WeightsInitializer,
+            device: str = 'cpu'
+    ):
+        super(Reservoir, self).__init__()
+        self.hyperparams = hyperparams
+        self.device = device
+        self.layers = [
+            ReservoirLayer(
+                in_size if l == 0 else hyperparams['reservoir_size'],
+                hyperparams,
+                initializer,
+                device
+            ) for l in range(self.hyperparams['n_layers'])
+        ]
+
+    @torch.no_grad()
+    def forward(self, x: torch.Tensor):
+        f = self.hyperparams['reservoir_size']
+        states = torch.ones((x.shape[0], x.shape[1], f * len(self.layers) + 1)).to(x.dtype).to(self.device)
+        for i, layer in enumerate(self.layers):
+            x = layer(x)
+            states[:, :, i * f:(i + 1) * f] = x
+        return states
 
 
 class ESN(AnomalyDetector):
@@ -108,13 +118,17 @@ class ESN(AnomalyDetector):
         super(ESN, self).__init__(**hyperparams)
         self.hyperparams = hyperparams
         self.device = device
-        initializer = WeightsInitializer(hyperparams['seed'])
+        initializer = WeightsInitializer(**{
+            k: hyperparams[k] for k in ['requires_grad', 'seed', 'dtype'] if k in hyperparams
+        })
 
         self.reservoir = Reservoir(in_size, hyperparams, initializer, device)
 
         self.readout = initializer(
-            (hyperparams['reservoir_size'] * hyperparams['n_layers'], in_size)
+            (hyperparams['reservoir_size'] * hyperparams['n_layers'] + 1, in_size)
         ).to(device)
+        if initializer.requires_grad:
+            self.readout = torch.nn.Parameter(self.readout)
 
         self.A, self.B = None, None
         self.reset_AB()
