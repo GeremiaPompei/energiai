@@ -69,9 +69,9 @@ def create_subplots(
     for key, label, unit in feature:
         f = map_label[key]
 
-        _, axs = plt.subplots(2, len(models), figsize=(13, 5 * len(models)))
+        _, axs = plt.subplots(len(models), 2, figsize=(13, 5 * len(models)))
 
-        for j, model in enumerate(models):
+        for j, (model_name, model) in enumerate(models.items()):
             ad_labels, ad_predictions, ad_std = model.predict(x_ts, y_ts)
             ad_labels, ad_predictions, ad_std = ad_labels[:,
                                                           :-1], ad_predictions[:, :-1], ad_std[:, :-1]
@@ -83,7 +83,6 @@ def create_subplots(
             if (len(np.where(labels_pred == 1)[0]) > 0):
                 treshold_pred = np.where(labels_pred == 1)[0][0]
 
-            model_name = model.__class__.__name__
             plot_with_thresholds(
                 axs[0] if len(list(axs.shape)) == 1 else axs[j, 0],
                 f'{model_name} Standard deviation (q): {label}',

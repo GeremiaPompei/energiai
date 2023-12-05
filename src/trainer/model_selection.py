@@ -107,6 +107,7 @@ def retraining(
         history_path='history/history.json',
         hyperparams_path='hyperparams/hyperparams.json',
         best_hyperparams=None,
+        title=None,
 ):
     fix_seed()
     device = select_device()
@@ -131,7 +132,7 @@ def retraining(
         total_history = {}
         if os.path.exists(history_path):
             total_history = json.load(open(history_path))
-        total_history[model.__class__.__name__] = history
+        total_history[title if title is not None else model.__class__.__name__] = history
         with open(history_path, 'w') as fp:
             json.dump(total_history, fp)
 

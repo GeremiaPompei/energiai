@@ -38,27 +38,6 @@ def training_pipeline(do_model_selection=True):
             model_constructor=ESN,
             trainer_constructor=RidgeRegressionTrainer,
         ),),
-        ('ESN_BPTT', dict(
-            hyperparams_list=gridsearch_generator(
-                model_reservoir_size=[100, 200],
-                model_alpha=[0.5],
-                model_input_ratio=[0.7, 0.9],
-                model_spectral_radius=[1.2, 0.9],
-                model_input_sparsity=[0.5],
-                model_reservoir_sparsity=[0.9],
-                model_regularization=[0.001, 0.1, 0.01],
-                model_n_layers=[2, 1],
-                model_washout=[100],
-                model_threshold_perc=[0.8, 1, 1.2],
-                model_window=[20, 50],
-                model_seed=[0],
-                model_requires_grad=[True],
-                trainer_epochs=[50],
-                trainer_lr=[1e-02, 1e-03, 1e-04]
-            ),
-            model_constructor=ESN,
-            trainer_constructor=BPTTTrainer,
-        ),),
         ('LSTM', dict(
             hyperparams_list=gridsearch_generator(
                 model_hidden_state=[100, 200, 300],
@@ -72,6 +51,30 @@ def training_pipeline(do_model_selection=True):
             trainer_constructor=BPTTTrainer,
         ),),
     ]
+
+    """configs.append(
+        ('ESN_BPTT', dict(
+            hyperparams_list=gridsearch_generator(
+                model_reservoir_size=[200],
+                model_alpha=[0.5],
+                model_input_ratio=[0.7],
+                model_spectral_radius=[0.9],
+                model_input_sparsity=[0.5],
+                model_reservoir_sparsity=[0.9],
+                model_regularization=[0.001],
+                model_n_layers=[1],
+                model_washout=[100],
+                model_threshold_perc=[1],
+                model_window=[20],
+                model_seed=[0],
+                model_requires_grad=[True],
+                trainer_epochs=[50],
+                trainer_lr=[1e-02, 1e-03, 1e-04]
+            ),
+            model_constructor=ESN,
+            trainer_constructor=BPTTTrainer,
+        ),),
+    )"""
 
     for name, config in configs:
         if do_model_selection:
@@ -94,4 +97,5 @@ def training_pipeline(do_model_selection=True):
             hyperparams_path=f'hyperparams/{name}_hyperparams.json',
             model_path=f'models/{name}.torch',
             history_path='history/history.json',
+            title=name,
         )
