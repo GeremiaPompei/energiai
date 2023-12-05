@@ -24,28 +24,35 @@ def preprocessing_pipeline(raw_dir: str = 'dataset/raw', output_dir: str = 'data
                        df[cs] > threshold_current for cs in columns_switchoff])]
         datasets[filename] = df.to_numpy()
     X = np.concatenate(list(datasets.values()))
-
+    X = X.T
     # standardization
-    X_mean, X_std = X.mean(), X.std()
+    X_mean, X_std = X.mean(0), X.std(0)
     X = (X - X_mean) / X_std
-    X_min, X_max = X.min(), X.max()
+    X_min, X_max = X.min(0), X.max(0)
+    dataset = X.T
 
-    cleaned_subdir, normalization_subdir = f'{output_dir}/cleaned', f'{output_dir}/normalization'
-    for path in [cleaned_subdir, normalization_subdir]:
-        if not os.path.exists(path):
-            os.mkdir(path)
+    pd.DataFrame(dataset).to_csv('dataset/cleaned/dataset.csv')
+    pd.DataFrame(X_mean).to_csv('dataset/normalization/mean.csv')
+    pd.DataFrame(X_std).to_csv('dataset/normalization/std.csv')
+    pd.DataFrame(X_min).to_csv('dataset/normalization/min.csv')
+    pd.DataFrame(X_max).to_csv('dataset/normalization/max.csv')
 
-    norm_path = f'{normalization_subdir}/scale_factors.json'
-    with open(norm_path, 'w') as fp:
-        json.dump(
-            dict(
-                mean=X_mean,
-                std=X_std,
-                max=X_max,
-                min=X_min,
-            ), fp
-        )
+    # cleaned_subdir, normalization_subdir = f'{output_dir}/cleaned', f'{output_dir}/normalization'
+    # for path in [cleaned_subdir, normalization_subdir]:
+    #     if not os.path.exists(path):
+    #         os.mkdir(path)
 
-    for filename, dataset in datasets.items():
-        dataset = scale(dataset, norm_path=norm_path)
-        pd.DataFrame(dataset).to_csv(f'{cleaned_subdir}/{filename}')
+    # norm_path = f'{normalization_subdir}/scale_factors1.json'
+    # with open(norm_path, 'w') as fp:
+    #     json.dump(
+    #         dict(
+    #             mean=X_mean.tolist(),
+    #             std=X_std.tolist(),
+    #             max=X_max.tolist(),
+    #             min=X_min.tolist(),
+    #         ), fp
+    #     )
+
+    # for filename, dataset in datasets.items():
+    #     dataset = scale(dataset, norm_path=norm_path)
+    #     pd.DataFrame(dataset).to_csv(f'{cleaned_subdir}/{filename}')
