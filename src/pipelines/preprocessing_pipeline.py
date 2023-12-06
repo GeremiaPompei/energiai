@@ -26,8 +26,6 @@ def preprocessing_pipeline(raw_dir: str = 'dataset/raw', output_dir: str = 'data
     X = np.concatenate(list(datasets.values()))
 
     # standardization
-    X_mean, X_std = X.mean(), X.std()
-    X = (X - X_mean) / X_std
     X_min, X_max = X.min(), X.max()
 
     cleaned_subdir, normalization_subdir = f'{output_dir}/cleaned', f'{output_dir}/normalization'
@@ -39,8 +37,6 @@ def preprocessing_pipeline(raw_dir: str = 'dataset/raw', output_dir: str = 'data
     with open(norm_path, 'w') as fp:
         json.dump(
             dict(
-                mean=X_mean,
-                std=X_std,
                 max=X_max,
                 min=X_min,
             ), fp
