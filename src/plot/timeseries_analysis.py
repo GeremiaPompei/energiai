@@ -4,8 +4,8 @@ from src.utility.constants import sifim_features
 from src.utility.scaler import rescale
 
 
-def plot_with_thresholds(ax, title, data, data_labels=[], plot_label='', sigma=None, fault_indicator=None, fault_detection_indicator=None, ts_sec=30, threshold_perc=2):
-
+def plot_with_thresholds(ax, title, data, data_labels=[], plot_label='', sigma=None, anomaly_indicator=None,
+                         anomaly_detection_indicator=None, ts_sec=30, threshold_perc=2):
     x_ticks = list(range(0, len(data[0]) + 1, 10))
     ax.set_xticks(x_ticks, [i * ts_sec for i in x_ticks])
     # Creazione del grafico
@@ -17,20 +17,20 @@ def plot_with_thresholds(ax, title, data, data_labels=[], plot_label='', sigma=N
         mean = 0
         m2s = np.ones(len(data[0])) * sigma * (-threshold_perc)
         p2s = np.ones(len(data[0])) * sigma * (+threshold_perc)
-        ax.axhline(y=mean, color='g', linestyle='--', label='Fault Threshold')
+        ax.axhline(y=mean, color='g', linestyle='--', label='Anomaly Threshold')
         ax.fill_between(range(len(data[0])), p2s, m2s, color='g', alpha=0.2)
-    # Etichette per upper value e lower value
+        # Etichette per upper value e lower value
         ax.text(0, sigma * threshold_perc,
                 f'{threshold_perc}\u03C3', color='g', fontsize=10, va='bottom', ha='left')
         ax.text(0, sigma * -threshold_perc,
                 f'-{threshold_perc}\u03C3', color='g', fontsize=10, va='top', ha='left')
 
-    if fault_indicator is not None:
-        ax.axvline(x=fault_indicator, color='b', linestyle='--', label='Fault Effective')
+    if anomaly_indicator is not None:
+        ax.axvline(x=anomaly_indicator, color='b', linestyle='--', label='Anomaly Effective')
     # if fd:
-    if fault_detection_indicator is not None:
-        ax.axvline(x=fault_detection_indicator, color='r',
-                   linestyle='--', label='Fault Predicted')
+    if anomaly_detection_indicator is not None:
+        ax.axvline(x=anomaly_detection_indicator, color='r',
+                   linestyle='--', label='Anomaly Predicted')
 
     # Aggiunta di etichette e titolo
     ax.set_xlabel('Time')
@@ -43,23 +43,23 @@ def plot_with_thresholds(ax, title, data, data_labels=[], plot_label='', sigma=N
 
 
 def create_subplots(
-    dataset,
-    models,
-    zoom_left=50,
-    zoom_right=50,
-    feature=[
-        ('energia_apparente_importata_sistema',
-         'System imported apparent energy effective', 'kWh'),
-        ('energia_attiva_importata_di_sistema',
-         'System imported active energy effective', 'kWh'),
-        ('potenza_attiva_di_sistema', 'Active system power', 'kWh'),
-        ('frequenza', 'Frequency', 'Hz'),
-        ('tensione_di_sistema', 'System voltage', 'Volt'),
-        ('corrente_di_sistema', 'System current', 'Ampere')
-    ],
-    n_example=0,
-    plotpath=None,
-    plotshow=True
+        dataset,
+        models,
+        zoom_left=50,
+        zoom_right=50,
+        feature=[
+            ('energia_apparente_importata_sistema',
+             'System imported apparent energy effective', 'kWh'),
+            ('energia_attiva_importata_di_sistema',
+             'System imported active energy effective', 'kWh'),
+            ('potenza_attiva_di_sistema', 'Active system power', 'kWh'),
+            ('frequenza', 'Frequency', 'Hz'),
+            ('tensione_di_sistema', 'System voltage', 'Volt'),
+            ('corrente_di_sistema', 'System current', 'Ampere')
+        ],
+        n_example=0,
+        plotpath=None,
+        plotshow=True
 ):
     map_label = {l: i for i, l in enumerate(sifim_features)}
     middle = dataset.x.shape[1] // 2
@@ -74,7 +74,7 @@ def create_subplots(
         for j, (model_name, model) in enumerate(models.items()):
             ad_labels, ad_predictions, ad_std = model.predict(x_ts, y_ts)
             ad_labels, ad_predictions, ad_std = ad_labels[:,
-                                                          :-1], ad_predictions[:, :-1], ad_std[:, :-1]
+                                                :-1], ad_predictions[:, :-1], ad_std[:, :-1]
             std = ad_std[n_example, start:end, f]
             labels_eff = dataset.y[n_example, start:end, f]
             labels_pred = ad_labels[n_example, start:end, f]
@@ -91,16 +91,16 @@ def create_subplots(
                 threshold_perc=model.threshold_perc,
                 data_labels=['q'],
                 plot_label='\u03C3',
-                fault_indicator=treshold_eff,
-                fault_detection_indicator=treshold_pred,
+                anomaly_indicator=treshold_eff,
+                anomaly_detection_indicator=treshold_pred,
             )  # standard deviation
 
             plot_with_thresholds(
                 axs[1] if len(list(axs.shape)) == 1 else axs[j, 1],
                 f'{model_name} Timeseries prediction: {label}',
                 [rescale(i) for i in [dataset.x[n_example, start:end, f], ad_predictions[n_example, start:end, f]]],
-                fault_indicator=treshold_eff,
-                fault_detection_indicator=treshold_pred,
+                anomaly_indicator=treshold_eff,
+                anomaly_detection_indicator=treshold_pred,
                 plot_label=unit,
                 data_labels=["Timeseries Effective", "Timeseries Prediction"],
             )  # timeseries effective and prediction
@@ -118,10 +118,10 @@ if __name__ == '__main__':
     data1 = np.random.random(100)
     data2 = np.random.random(100)
     thresholds = [0.3, 0.6, 0.8]
-    fault_indicator = int(np.random.uniform(50, 100))
+    anomaly_indicator = int(np.random.uniform(50, 100))
     drift_indicator = int(np.random.uniform(50, 100))
-    fault_detection_indicator = int(np.random.uniform(50, 100))
+    anomaly_detection_indicator = int(np.random.uniform(50, 100))
 
     # Chiamata alla funzione
-    plot_with_thresholds(data1, data2, thresholds, fault_indicator,
-                         drift_indicator, fault_detection_indicator)
+    plot_with_thresholds(data1, data2, thresholds, anomaly_indicator,
+                         drift_indicator, anomaly_detection_indicator)
