@@ -10,8 +10,8 @@ class BPTTTrainer(Trainer):
         super(BPTTTrainer, self).__init__(*args, **kwargs)
         self.callback = callback
 
-    def train_model(self, epochs: int = 10, lr: float = 1e-3):
-        optimizer = torch.optim.Adam(self.model.parameters(), lr=lr)
+    def train_model(self, epochs: int = 10, lr: float = 1e-3, momentum: float = 0, weight_decay: float = 0):
+        optimizer = torch.optim.SGD(self.model.parameters(), lr=lr, momentum=momentum, weight_decay=weight_decay)
         tr_loss = 0
         for epoch in range(epochs):
             tr_loss = 0

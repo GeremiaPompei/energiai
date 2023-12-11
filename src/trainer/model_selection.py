@@ -113,10 +113,8 @@ def retraining(
     device = select_device()
     if best_hyperparams is None and os.path.exists(hyperparams_path):
         best_hyperparams, _ = __read_hyperparams_file__(hyperparams_path)
-    model_hyperparams = {k.replace(
-        'model_', ''): v for k, v in best_hyperparams.items() if 'model_' in k}
-    trainer_hyperparams = {k.replace(
-        'trainer_', ''): v for k, v in best_hyperparams.items() if 'trainer_' in k}
+    model_hyperparams = {k.replace('model_', ''): v for k, v in best_hyperparams.items() if 'model_' in k}
+    trainer_hyperparams = {k.replace('trainer_', ''): v for k, v in best_hyperparams.items() if 'trainer_' in k}
     tr_dataloader = torch.utils.data.DataLoader(
         tr_dataset, batch_size=batch_size, shuffle=shuffle)
     ts_dataloader = torch.utils.data.DataLoader(

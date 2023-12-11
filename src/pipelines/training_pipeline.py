@@ -40,12 +40,15 @@ def training_pipeline(do_model_selection=True):
         ),),
         ('LSTM', dict(
             hyperparams_list=gridsearch_generator(
-                model_hidden_state=[100, 200, 300],
-                model_n_layers=[4, 3, 2, 1],
+                model_hidden_state=[100, 200],
+                model_n_layers=[2, 1],
+                model_dropout=[0, 0.1, 0.2],
                 model_threshold_perc=[0.8, 1, 1.2],
                 model_window=[20, 50],
                 trainer_epochs=[50],
-                trainer_lr=[1e-02, 1e-03, 1e-04]
+                trainer_lr=[1e-02, 1e-03],
+                trainer_momentum=[0, 0.9],
+                trainer_weight_decay=[0, 0.001],
             ),
             model_constructor=LSTM,
             trainer_constructor=BPTTTrainer,

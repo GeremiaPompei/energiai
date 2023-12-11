@@ -30,9 +30,9 @@ class Trainer:
         for batch_idx, (data, labels) in enumerate(self.ts_loader):
             data = data.to(self.device)
             x, y = data[:, 1:], data[:, :-1]
-            p, _, _ = self.model.predict(x, y)
+            p, o, _ = self.model.predict(x, y)
+            ts_loss += self.criterion(y, o).item()
             labels = labels[:, -p.shape[1]:]
-            ts_loss += self.criterion(labels, p).item()
             curr_scores = compute_scores(labels, p)
             if scores is not None:
                 for k, v in curr_scores.items():
