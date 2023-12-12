@@ -47,7 +47,7 @@ def training_pipeline(do_model_selection=True):
                 model_window=[20, 50],
                 trainer_epochs=[50],
                 trainer_lr=[1e-02, 1e-03],
-                trainer_momentum=[0, 0.9],
+                trainer_momentum=[0, 0.5, 0.9],
                 trainer_weight_decay=[0, 0.001],
             ),
             model_constructor=LSTM,
