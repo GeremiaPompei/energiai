@@ -23,7 +23,7 @@ class Trainer:
             x, y = data[:, 1:], data[:, :-1]
             self.model.register_std(x, y)
 
-        ts_loss, scores = 0, None
+        outputs = []
         emissions_tracker = EmissionsTracker(log_level="critical", save_to_file=False)
         emissions_tracker.start()
         start = time.time()
@@ -31,6 +31,12 @@ class Trainer:
             data = data.to(self.device)
             x, y = data[:, 1:], data[:, :-1]
             p, o, _ = self.model.predict(x, y)
+            outputs.append((y, o, labels, p))
+        ts_time = time.time() - start
+        ts_emissions = emissions_tracker.stop()
+
+        ts_loss, scores = 0, None
+        for y, o, labels, p in outputs:
             ts_loss += self.criterion(y, o).item()
             labels = labels[:, -p.shape[1]:]
             curr_scores = compute_scores(labels, p)
@@ -39,8 +45,6 @@ class Trainer:
                     scores[k] += v
             else:
                 scores = curr_scores
-        ts_time = time.time() - start
-        ts_emissions = emissions_tracker.stop()
         ts_loss = ts_loss / len(self.ts_loader)
         scores = {k: s / len(self.ts_loader) for k, s in scores.items()}
         return ts_loss, ts_time, ts_emissions, scores
