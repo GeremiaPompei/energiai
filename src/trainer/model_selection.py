@@ -128,11 +128,12 @@ def retraining(
     if model_path is None or not os.path.exists(model_path):
         history = trainer(**trainer_hyperparams)
         total_history = {}
-        if os.path.exists(history_path):
-            total_history = json.load(open(history_path))
-        total_history[title if title is not None else model.__class__.__name__] = history
-        with open(history_path, 'w') as fp:
-            json.dump(total_history, fp)
+        if history_path is not None:
+            if os.path.exists(history_path):
+                total_history = json.load(open(history_path))
+            total_history[title if title is not None else model.__class__.__name__] = history
+            with open(history_path, 'w') as fp:
+                json.dump(total_history, fp)
 
         if model_path is not None:
             torch.save(model, model_path)
