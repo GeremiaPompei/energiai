@@ -5,7 +5,7 @@ from src.utility.scaler import rescale
 
 
 def plot_with_thresholds(ax, title, data, data_labels=[], plot_label='', sigma=None, anomaly_indicator=None,
-                         anomaly_detection_indicator=None, ts_sec=30, threshold_perc=2):
+                         anomaly_detection_indicator=None, ts_sec=30, threshold_perc=2, ymax=None):
     x_ticks = list(range(0, len(data[0]) + 1, 10))
     ax.set_xticks(x_ticks, [i * ts_sec for i in x_ticks])
     # Creazione del grafico
@@ -15,15 +15,14 @@ def plot_with_thresholds(ax, title, data, data_labels=[], plot_label='', sigma=N
     # Aggiunta di threshold al grafico
     if sigma is not None:
         mean = 0
-        m2s = np.ones(len(data[0])) * sigma * (-threshold_perc)
+        m2s = np.zeros(len(data[0]))# * sigma * (-threshold_perc)
         p2s = np.ones(len(data[0])) * sigma * (+threshold_perc)
         ax.axhline(y=mean, color='g', linestyle='--', label='Anomaly Threshold')
         ax.fill_between(range(len(data[0])), p2s, m2s, color='g', alpha=0.2)
         # Etichette per upper value e lower value
         ax.text(0, sigma * threshold_perc,
                 f'{threshold_perc}\u03C3', color='g', fontsize=10, va='bottom', ha='left')
-        ax.text(0, sigma * -threshold_perc,
-                f'-{threshold_perc}\u03C3', color='g', fontsize=10, va='top', ha='left')
+        # ax.text(0, sigma * -threshold_perc, f'-{threshold_perc}\u03C3', color='g', fontsize=10, va='top', ha='left')
 
     if anomaly_indicator is not None:
         ax.axvline(x=anomaly_indicator, color='b', linestyle='--', label='Anomaly Effective')
@@ -31,6 +30,9 @@ def plot_with_thresholds(ax, title, data, data_labels=[], plot_label='', sigma=N
     if anomaly_detection_indicator is not None:
         ax.axvline(x=anomaly_detection_indicator, color='r',
                    linestyle='--', label='Anomaly Predicted')
+
+    if sigma is not None and ymax is not None:
+        ax.set_ylim([- 0.1 * sigma, sigma * ymax])
 
     # Aggiunta di etichette e titolo
     ax.set_xlabel('Time')
@@ -59,7 +61,8 @@ def create_subplots(
         ],
         n_example=0,
         plotpath=None,
-        plotshow=True
+        plotshow=True,
+        ymax=None,
 ):
     map_label = {l: i for i, l in enumerate(sifim_features)}
     middle = dataset.x.shape[1] // 2
@@ -93,6 +96,7 @@ def create_subplots(
                 plot_label='\u03C3',
                 anomaly_indicator=treshold_eff,
                 anomaly_detection_indicator=treshold_pred,
+                ymax=ymax
             )  # standard deviation
 
             plot_with_thresholds(
