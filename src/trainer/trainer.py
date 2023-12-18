@@ -22,7 +22,7 @@ class Trainer:
         return EmissionsTracker(
             log_level="critical",
             save_to_file='save_emissions' in kwargs,
-            output_file=f'{kwargs["save_emissions"]}emissions.csv',
+            output_file=f'{kwargs["save_emissions"]}emissions.csv' if 'save_emissions' in kwargs else '',
             project_name=name,
         )
 
