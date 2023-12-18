@@ -3,7 +3,7 @@ from src.trainer.trainer import Trainer
 
 class RidgeRegressionTrainer(Trainer):
 
-    def train_model(self):
+    def train_model(self, *args, **kwargs):
         tr_loss = 0
         self.model.train()
         for batch_idx, (data, _) in enumerate(self.tr_loader):

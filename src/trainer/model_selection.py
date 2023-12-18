@@ -104,7 +104,7 @@ def retraining(
         batch_size=32,
         shuffle=True,
         model_path='model/model.torch',
-        history_path='history/history.json',
+        history_path='history/',
         hyperparams_path='hyperparams/hyperparams.json',
         best_hyperparams=None,
         title=None,
@@ -126,13 +126,14 @@ def retraining(
     trainer = trainer_constructor(
         model, tr_dataloader, ts_dataloader, device=device)
     if model_path is None or not os.path.exists(model_path):
-        history = trainer(**trainer_hyperparams)
+        history = trainer(**trainer_hyperparams, save_emissions=history_path)
         total_history = {}
-        if history_path is not None:
-            if os.path.exists(history_path):
-                total_history = json.load(open(history_path))
+        history_fn = f'{history_path}history.json'
+        if history_fn is not None:
+            if os.path.exists(history_fn):
+                total_history = json.load(open(history_fn))
             total_history[title if title is not None else model.__class__.__name__] = history
-            with open(history_path, 'w') as fp:
+            with open(history_fn, 'w') as fp:
                 json.dump(total_history, fp)
 
         if model_path is not None:

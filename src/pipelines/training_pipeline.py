@@ -73,6 +73,6 @@ def training_pipeline(do_model_selection=True):
             shuffle=True,
             hyperparams_path=f'hyperparams/{name}_hyperparams.json',
             model_path=f'models/{name}.torch',
-            history_path='history/history.json',
+            history_path='history/',
             title=name,
         )
