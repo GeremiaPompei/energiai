@@ -8,20 +8,20 @@ from src.utility.fix_seed import fix_seed
 from src.utility.select_device import select_device
 
 
-def __read_hyperparams_file__(filename, cache=None):
+def __read_hyperparams_file__(filename, cache=None, criterion_metric=max):
     with open(filename, 'r') as fn:
         data = json.load(fn)
         best_hyperparams = data['best_hyperparams']
         best_loss = data['best_loss']
         for c in data['cache']:
             hp = json.dumps(c['hyperparams'])
-            if cache is not None and hp not in cache:
+            if cache is not None and len(cache) > 0 and hp not in cache:
                 cache[hp] = c['loss']
     if cache is None:
         return best_hyperparams, best_loss
     else:
         for hp, loss in cache.items():
-            if best_loss is None or best_loss > loss:
+            if best_loss is None or criterion_metric(best_loss, loss) == loss:
                 best_loss = loss
                 best_hyperparams = json.loads(hp)
         return best_hyperparams, best_loss, cache
@@ -37,6 +37,8 @@ def model_selection(
         shuffle=True,
         hyperparams_path='hyperparams/hyperparams.json',
         tqdm=None,
+        metric='accuracy',
+        criterion_metric=max,
 ):
     fix_seed()
     device = select_device()
@@ -44,7 +46,7 @@ def model_selection(
     best_hyperparams, best_loss, cache = None, None, {}
     if os.path.exists(hyperparams_path):
         best_hyperparams, best_loss, cache = __read_hyperparams_file__(
-            hyperparams_path, cache)
+            hyperparams_path, cache, criterion_metric)
 
     if tqdm is None:
         def tqdm(x): return x
@@ -71,13 +73,13 @@ def model_selection(
             # trainer
             trainer = trainer_constructor(
                 model, tr_dataloader, vl_dataloader, device=device)
-            vl_loss = trainer(**trainer_hyperparams)['ts_loss']
+            vl_loss = trainer(**trainer_hyperparams)[metric]
 
         cache[json.dumps(hyperparams)] = vl_loss
         if os.path.exists(hyperparams_path):
             best_hyperparams, best_loss, cache = __read_hyperparams_file__(
-                hyperparams_path, cache)
-        if best_loss is None or best_loss > vl_loss:
+                hyperparams_path, cache, criterion_metric)
+        if best_loss is None or criterion_metric(best_loss, vl_loss) == vl_loss:
             best_hyperparams = hyperparams
             best_loss = vl_loss
             log.info(

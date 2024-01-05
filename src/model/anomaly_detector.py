@@ -8,7 +8,7 @@ class AnomalyDetector(torch.nn.Module):
         super(AnomalyDetector, self).__init__()
         self.window = window
         self.sigma = 0
-        self.tr_data = 0
+        self.batch_stds = []
         self.threshold_perc = threshold_perc
 
     def _loss_(self, y, p):
@@ -16,15 +16,17 @@ class AnomalyDetector(torch.nn.Module):
 
     def reset(self):
         self.sigma = 0
-        self.tr_data = 0
+        self.batch_stds = []
 
     @torch.no_grad()
-    def register_std(self, x, y):
+    def compute_batch_std(self, x, y):
         out = self(x)
-        e = self._loss_(y, out).reshape(-1, y.shape[-1]).std(0)
-        tot = self.tr_data + 1
-        self.sigma = (self.sigma * self.tr_data + e) / tot
-        self.tr_data = tot
+        e = self._loss_(y, out).reshape(-1, y.shape[-1])
+        self.batch_stds.append(e)
+
+    @torch.no_grad()
+    def compute_std(self):
+        self.sigma = torch.cat(self.batch_stds, dim=0).std(0)
 
     @torch.no_grad()
     def predict(self, x, y):

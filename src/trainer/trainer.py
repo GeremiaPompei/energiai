@@ -30,7 +30,8 @@ class Trainer:
         for batch_idx, (data, _) in enumerate(self.tr_loader):
             data = data.to(self.device)
             x, y = data[:, 1:], data[:, :-1]
-            self.model.register_std(x, y)
+            self.model.compute_batch_std(x, y)
+        self.model.compute_std()
 
         outputs = []
         emissions_tracker = self.__construct_emissions_tracker__(*args, type='test', **kwargs)
