@@ -72,7 +72,7 @@ def create_subplots(
     for key, label, unit in feature:
         f = map_label[key]
 
-        _, axs = plt.subplots(len(models), 2, figsize=(13, 5 * len(models)))
+        _, axs = plt.subplots(len(models), 2, figsize=(13, 4 * len(models)))
 
         for j, (model_name, model) in enumerate(models.items()):
             ad_labels, ad_predictions, ad_std = model.predict(x_ts, y_ts)
