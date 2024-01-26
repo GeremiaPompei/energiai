@@ -4,7 +4,7 @@ from src.pipelines.training_pipeline import training_pipeline
 
 def main():
     # preprocessing_pipeline()
-    training_pipeline(do_model_selection=True)
+    training_pipeline(do_model_selection=False)
 
 
 if __name__ == '__main__':

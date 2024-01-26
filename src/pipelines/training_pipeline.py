@@ -18,13 +18,13 @@ def training_pipeline(do_model_selection=True):
     configs = [
         ('ESN', dict(
             hyperparams_list=gridsearch_generator(
-                model_reservoir_size=[100, 200],
-                model_alpha=[0.5],
+                model_reservoir_size=[100, 200, 300],
+                model_alpha=[0.5, 0.2, 0.8],
                 model_input_ratio=[0.7, 0.9],
                 model_spectral_radius=[1.2, 0.9],
                 model_input_sparsity=[0.5],
                 model_reservoir_sparsity=[0.9],
-                model_regularization=[0.001],
+                model_regularization=[0.001, 0.01, 0.0001],
                 model_n_layers=[2, 3],
                 model_washout=[100],
                 model_threshold_perc=[0.8, 1, 1.2],
