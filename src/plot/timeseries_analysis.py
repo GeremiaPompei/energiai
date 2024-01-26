@@ -102,7 +102,7 @@ def create_subplots(
             plot_with_thresholds(
                 axs[1] if len(list(axs.shape)) == 1 else axs[j, 1],
                 f'{model_name} Timeseries prediction: {label}',
-                [rescale(i) for i in [dataset.x[n_example, start:end, f], ad_predictions[n_example, start:end, f]]],
+                [rescale(i, feature=f) for i in [dataset.x[n_example, start:end, f], ad_predictions[n_example, start:end, f]]],
                 anomaly_indicator=treshold_eff,
                 anomaly_detection_indicator=treshold_pred,
                 plot_label=unit,

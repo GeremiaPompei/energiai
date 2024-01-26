@@ -13,7 +13,7 @@ def training_pipeline(do_model_selection=True):
     device = select_device()
 
     # dataset
-    tr_dataset, vl_dataset, ts_dataset = create_sifim_datasets(vl_perc=0.2, ts_perc=0.2, noise=0.005)
+    tr_dataset, vl_dataset, ts_dataset = create_sifim_datasets(vl_perc=0.2, ts_perc=0.2)
 
     configs = [
         ('ESN', dict(

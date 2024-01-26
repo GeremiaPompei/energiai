@@ -1,14 +1,21 @@
+import json
 import os
 
+import numpy as np
 import pandas as pd
 import torch
 
 from src.utility import fix_seed
 
 
-def create_sifim_datasets(dir='dataset/cleaned/', timesteps=300, vl_perc=0.2, ts_perc=0.2, noise=0.005, seed=0):
+def create_sifim_datasets(dir='dataset/cleaned/', timesteps=300, vl_perc=0.2, ts_perc=0.2, noise=0.1, seed=0):
     fix_seed(seed=seed)
     tr_set, vl_set, ts_set = [], [], []
+
+    norm_path = 'dataset/normalization/scale_factors.json'
+    with open(norm_path) as fp:
+        sf = json.load(fp)
+        noise *= np.array(sf['std'])
 
     for filename in os.listdir(dir):
         if not filename.startswith('.'):
