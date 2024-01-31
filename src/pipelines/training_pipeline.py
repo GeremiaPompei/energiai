@@ -38,7 +38,7 @@ def training_pipeline(do_model_selection=True):
         ('LSTM', dict(
             hyperparams_list=gridsearch_generator(
                 model_hidden_state=[100, 200],
-                model_n_layers=[2, 1],
+                model_n_layers=[2, 3],
                 model_dropout=[0],
                 model_threshold_perc=[0.8, 1, 1.2],
                 model_window=[20],
