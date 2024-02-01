@@ -131,7 +131,7 @@ def retraining(
         history = trainer(**trainer_hyperparams, save_emissions=history_path)
         total_history = {}
         history_fn = f'{history_path}history.json'
-        if history_fn is not None:
+        if history_path is not None:
             if os.path.exists(history_fn):
                 total_history = json.load(open(history_fn))
             total_history[title if title is not None else model.__class__.__name__] = history

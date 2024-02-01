@@ -8,7 +8,7 @@ import torch
 from src.utility import fix_seed
 
 
-def create_sifim_datasets(dir='dataset/cleaned/', timesteps=300, vl_perc=0.2, ts_perc=0.2, noise=0.1, seed=0):
+def create_sifim_datasets(dir='dataset/cleaned/', timesteps=300, vl_perc=0.2, ts_perc=0.2, noise=0.2, seed=0):
     fix_seed(seed=seed)
     tr_set, vl_set, ts_set = [], [], []
 

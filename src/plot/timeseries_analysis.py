@@ -5,7 +5,8 @@ from src.utility.scaler import rescale
 
 
 def plot_with_thresholds(ax, title, data, data_labels=[], plot_label='', sigma=None, anomaly_indicator=None,
-                         anomaly_detection_indicator=None, ts_sec=30, threshold_perc=2, ymax=None):
+                         anomaly_detection_indicator=None, ts_sec=30, threshold_perc=2, ymax=None,
+                         legend_loc='upper left'):
     x_ticks = list(range(0, len(data[0]) + 1, 10))
     ax.set_xticks(x_ticks, [i * ts_sec for i in x_ticks])
     # Creazione del grafico
@@ -15,7 +16,7 @@ def plot_with_thresholds(ax, title, data, data_labels=[], plot_label='', sigma=N
     # Aggiunta di threshold al grafico
     if sigma is not None:
         mean = 0
-        m2s = np.zeros(len(data[0]))# * sigma * (-threshold_perc)
+        m2s = np.zeros(len(data[0]))  # * sigma * (-threshold_perc)
         p2s = np.ones(len(data[0])) * sigma * (+threshold_perc)
         ax.axhline(y=mean, color='g', linestyle='--', label='Anomaly Threshold')
         ax.fill_between(range(len(data[0])), p2s, m2s, color='g', alpha=0.2)
@@ -40,7 +41,7 @@ def plot_with_thresholds(ax, title, data, data_labels=[], plot_label='', sigma=N
     ax.set_title(title)
 
     # Aggiunta di una legenda
-    ax.legend(loc='upper left')
+    ax.legend(loc=legend_loc)
     ax.grid(True)
 
 
@@ -63,6 +64,8 @@ def create_subplots(
         plotpath=None,
         plotshow=True,
         ymax=None,
+        legend_loc_1='upper left',
+        legend_loc_2='upper left'
 ):
     map_label = {l: i for i, l in enumerate(sifim_features)}
     middle = dataset.x.shape[1] // 2
@@ -96,17 +99,20 @@ def create_subplots(
                 plot_label='\u03C3',
                 anomaly_indicator=treshold_eff,
                 anomaly_detection_indicator=treshold_pred,
-                ymax=ymax
+                ymax=ymax,
+                legend_loc=legend_loc_1,
             )  # standard deviation
 
             plot_with_thresholds(
                 axs[1] if len(list(axs.shape)) == 1 else axs[j, 1],
                 f'{model_name} Timeseries prediction: {label}',
-                [rescale(i, feature=f) for i in [dataset.x[n_example, start:end, f], ad_predictions[n_example, start:end, f]]],
+                [rescale(i, feature=f) for i in
+                 [dataset.x[n_example, start:end, f], ad_predictions[n_example, start:end, f]]],
                 anomaly_indicator=treshold_eff,
                 anomaly_detection_indicator=treshold_pred,
                 plot_label=unit,
                 data_labels=["Timeseries Effective", "Timeseries Prediction"],
+                legend_loc=legend_loc_2,
             )  # timeseries effective and prediction
             plt.tight_layout()
 
