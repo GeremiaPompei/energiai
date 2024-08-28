@@ -25,7 +25,25 @@ def f1_score(y, p):
     return 2 * prec * rec / (prec + rec + eps)
 
 
-def compute_scores(y, p):
+def compute_scores_anomaly(y, p):
     return {callback.__name__: callback(y, p) for callback in [
         accuracy, precision, recall, f1_score
+    ]}
+
+
+def mse_score(y, p):
+    return (y - p).square().mean().item()
+
+
+def rmse_score(y, p):
+    return (y - p).square().mean().sqrt().item()
+
+
+def mae_score(y, p):
+    return (y - p).abs().mean().item()
+
+
+def compute_scores_forecasting(y, p):
+    return {callback.__name__: callback(y, p) for callback in [
+        mse_score, mae_score, rmse_score
     ]}

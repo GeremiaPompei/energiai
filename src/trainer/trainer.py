@@ -2,7 +2,8 @@ import time
 
 import torch
 from src.utility import log
-from src.utility.metrics import compute_scores
+from src.utility.constants import sifim_features
+from src.utility.metrics import compute_scores_anomaly, compute_scores_forecasting
 from codecarbon import EmissionsTracker
 
 
@@ -39,7 +40,7 @@ class Trainer:
         start = time.time()
         for batch_idx, (data, labels) in enumerate(self.ts_loader):
             data = data.to(self.device)
-            x, y = data[:, 1:], data[:, :-1]
+            x, y = data[:, :-1], data[:, 1:]
             p, o, _ = self.model.predict(x, y)
             outputs.append((y, o, labels, p))
         ts_time = time.time() - start
@@ -49,7 +50,13 @@ class Trainer:
         for y, o, labels, p in outputs:
             ts_loss += self.criterion(y, o).item()
             labels = labels[:, -p.shape[1]:]
-            curr_scores = compute_scores(labels, p)
+            curr_scores = compute_scores_anomaly(labels, p)
+            idx = {l: i for i, l in enumerate(sifim_features)}['potenza_attiva_di_sistema']
+            mask = (1 - labels[:, :, idx]).abs().to(torch.bool)
+            yy, oo = y[:, -mask.shape[1]:, idx][mask], o[:, -mask.shape[1]:, idx][mask]
+            curr_fr_scores = compute_scores_forecasting(yy, oo)
+            for k, v in curr_fr_scores.items():
+                curr_scores[k] = v
             if scores is not None:
                 for k, v in curr_scores.items():
                     scores[k] += v

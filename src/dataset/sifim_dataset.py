@@ -34,12 +34,12 @@ def create_sifim_datasets(dir='dataset/cleaned/', timesteps=300, vl_perc=0.2, ts
         x = torch.cat(dataset)
         y = torch.zeros_like(x)
         if test:
-            half_ts = timesteps // 2
+            portion_ts = timesteps // 4
             n_features = x.shape[-1]
 
-            anomaly = torch.randn(x.shape[0], half_ts, n_features) * noise
-            x[:, half_ts:] = x[:, half_ts:] + anomaly
-            y[:, half_ts:] = 1
+            anomaly = torch.randn(x.shape[0], portion_ts, n_features) * noise
+            x[:, -portion_ts:] = x[:, -portion_ts:] + anomaly
+            y[:, -portion_ts:] = 1
         y = y.squeeze().to(torch.int64)
 
         datasets.append(SifimDataset(x.to(torch.float64), y.to(torch.float64)))
