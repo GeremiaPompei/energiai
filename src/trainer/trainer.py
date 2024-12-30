@@ -5,6 +5,7 @@ from src.utility import log
 from src.utility.constants import sifim_features
 from src.utility.metrics import compute_scores_anomaly, compute_scores_forecasting
 from codecarbon import EmissionsTracker
+from sklearn.metrics import confusion_matrix
 
 
 class Trainer:
@@ -29,15 +30,18 @@ class Trainer:
 
     def test(self, *args, **kwargs):
         # for batch_idx, (data, _) in enumerate(self.tr_loader):
-        for batch_idx, (x,y, _) in enumerate(self.tr_loader):
+        for batch_idx, (x, y, _) in enumerate(self.tr_loader):
             # data = data.to(self.device)
             # x, y = data[:, 1:], data[:, :-1]
             self.model.compute_batch_std(x, y)
         self.model.compute_std()
 
         outputs = []
-        emissions_tracker = self.__construct_emissions_tracker__(*args, type='test', **kwargs)
+        emissions_tracker = self.__construct_emissions_tracker__(
+            *args, type='test', **kwargs)
         emissions_tracker.start()
+        anomaly_true_list = []
+        anomaly_predict_list = []
         start = time.time()
         # for batch_idx, (data, labels) in enumerate(self.ts_loader):
         for batch_idx, (x, y, labels) in enumerate(self.ts_loader):
@@ -46,15 +50,24 @@ class Trainer:
             x = x.to(self.device)
             y = y.to(self.device)
             p, o, _ = self.model.predict(x, y)
+            labels = labels[:, -p.shape[1]:]
+            p = p.mean(-1).unsqueeze(-1)
             outputs.append((y, o, labels, p))
+            anomaly_predict_list.append(p)
+            anomaly_true_list.append(labels)
             # print(x.shape, y.shape, o.shape, p.shape, labels.shape)
         ts_time = time.time() - start
         ts_emissions = emissions_tracker.stop()
+        anomaly_true_list = torch.cat(
+            anomaly_true_list, dim=0).cpu().numpy().flatten().astype(int)
+        anomaly_predict_list = torch.cat(
+            anomaly_predict_list, dim=0).cpu().numpy().flatten().astype(int)
+        confusion_matrix_anomaly = confusion_matrix(
+            anomaly_true_list, anomaly_predict_list, labels=[0, 1])
 
         ts_loss, scores = 0, None
         for y, o, labels, p in outputs:
             ts_loss += self.criterion(y, o).item()
-            labels = labels[:, -p.shape[1]:]
             curr_scores = compute_scores_anomaly(labels, p)
             # idx = {l: i for i, l in enumerate(sifim_features)}['potenza_attiva_di_sistema']
             # mask = (1 - labels[:, :, idx]).abs().to(torch.bool)
@@ -69,12 +82,14 @@ class Trainer:
                 scores = curr_scores
         ts_loss = ts_loss / len(self.ts_loader)
         scores = {k: s / len(self.ts_loader) for k, s in scores.items()}
+        scores['confusion_matrix'] = confusion_matrix_anomaly.tolist()
         return ts_loss, ts_time, ts_emissions, scores
 
     def __call__(self, *args, **kwargs):
         self.model.train()
 
-        emissions_tracker = self.__construct_emissions_tracker__(*args, type='train', **kwargs)
+        emissions_tracker = self.__construct_emissions_tracker__(
+            *args, type='train', **kwargs)
         emissions_tracker.start()
         start = time.time()
         tr_loss = self.train_model(*args, **kwargs)
