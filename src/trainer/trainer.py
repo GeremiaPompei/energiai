@@ -28,9 +28,10 @@ class Trainer:
         )
 
     def test(self, *args, **kwargs):
-        for batch_idx, (data, _) in enumerate(self.tr_loader):
-            data = data.to(self.device)
-            x, y = data[:, 1:], data[:, :-1]
+        # for batch_idx, (data, _) in enumerate(self.tr_loader):
+        for batch_idx, (x,y, _) in enumerate(self.tr_loader):
+            # data = data.to(self.device)
+            # x, y = data[:, 1:], data[:, :-1]
             self.model.compute_batch_std(x, y)
         self.model.compute_std()
 
@@ -38,11 +39,15 @@ class Trainer:
         emissions_tracker = self.__construct_emissions_tracker__(*args, type='test', **kwargs)
         emissions_tracker.start()
         start = time.time()
-        for batch_idx, (data, labels) in enumerate(self.ts_loader):
-            data = data.to(self.device)
-            x, y = data[:, :-1], data[:, 1:]
+        # for batch_idx, (data, labels) in enumerate(self.ts_loader):
+        for batch_idx, (x, y, labels) in enumerate(self.ts_loader):
+            # data = data.to(self.device)
+            # x, y = data[:, :-1], data[:, 1:]
+            x = x.to(self.device)
+            y = y.to(self.device)
             p, o, _ = self.model.predict(x, y)
             outputs.append((y, o, labels, p))
+            # print(x.shape, y.shape, o.shape, p.shape, labels.shape)
         ts_time = time.time() - start
         ts_emissions = emissions_tracker.stop()
 
@@ -51,10 +56,10 @@ class Trainer:
             ts_loss += self.criterion(y, o).item()
             labels = labels[:, -p.shape[1]:]
             curr_scores = compute_scores_anomaly(labels, p)
-            idx = {l: i for i, l in enumerate(sifim_features)}['potenza_attiva_di_sistema']
-            mask = (1 - labels[:, :, idx]).abs().to(torch.bool)
-            yy, oo = y[:, -mask.shape[1]:, idx][mask], o[:, -mask.shape[1]:, idx][mask]
-            curr_fr_scores = compute_scores_forecasting(yy, oo)
+            # idx = {l: i for i, l in enumerate(sifim_features)}['potenza_attiva_di_sistema']
+            # mask = (1 - labels[:, :, idx]).abs().to(torch.bool)
+            # yy, oo = y[:, -mask.shape[1]:, idx][mask], o[:, -mask.shape[1]:, idx][mask]
+            curr_fr_scores = compute_scores_forecasting(y, o)
             for k, v in curr_fr_scores.items():
                 curr_scores[k] = v
             if scores is not None:

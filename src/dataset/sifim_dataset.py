@@ -19,7 +19,7 @@ def create_sifim_datasets(dir='dataset/cleaned/', timesteps=300, vl_perc=0.2, ts
 
     for filename in os.listdir(dir):
         if not filename.startswith('.'):
-            dataset = torch.from_numpy(pd.read_csv(f'{dir}/{filename}').to_numpy()[:, 1:]).to(torch.float64)
+            dataset = torch.from_numpy(pd.read_csv(f'{dir}/{filename}').to_numpy()[:, 1:]).to(torch.float32)
             n_examples = int(dataset.shape[0] / timesteps)
             dataset = dataset[:n_examples * timesteps].view(n_examples, timesteps, dataset.shape[-1])
             dataset = dataset[torch.randperm(n_examples)]
@@ -42,7 +42,7 @@ def create_sifim_datasets(dir='dataset/cleaned/', timesteps=300, vl_perc=0.2, ts
             y[:, -portion_ts:] = 1
         y = y.squeeze().to(torch.int64)
 
-        datasets.append(SifimDataset(x.to(torch.float64), y.to(torch.float64)))
+        datasets.append(SifimDataset(x.to(torch.float32), y.to(torch.float32)))
 
     return tuple(datasets)
 

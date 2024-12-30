@@ -14,7 +14,7 @@ def __read_hyperparams_file__(filename, cache=None, criterion_metric=max):
         best_hyperparams = data['best_hyperparams']
         best_loss = data['best_loss']
         for c in data['cache']:
-            hp = json.dumps(c['hyperparams'])
+            hp = json.dumps(c['hyperparams'], indent=4)
             if cache is not None and len(cache) > 0 and hp not in cache:
                 cache[hp] = c['loss']
     if cache is None:
@@ -68,7 +68,10 @@ def model_selection(
 
             # model
             model = model_constructor(
-                tr_dataset.x.shape[-1], **model_hyperparams, device=device)
+                tr_dataset.num_feat(),               
+                tr_dataset.out_feat(),
+                **model_hyperparams,
+                device=device)
 
             # trainer
             trainer = trainer_constructor(
@@ -92,7 +95,7 @@ def model_selection(
                     dict(hyperparams=json.loads(hyperparams), loss=loss)
                     for hyperparams, loss in cache.items()
                 ],
-            ), fn)
+            ), fn, indent=4)
 
     log.info(
         f'Final best loss: {best_loss}, best hyperparams: {best_hyperparams}')
@@ -123,7 +126,7 @@ def retraining(
         ts_dataset, batch_size=batch_size, shuffle=shuffle)
     # model
     model = model_constructor(
-        tr_dataset.x.shape[-1], **model_hyperparams, device=device)
+        tr_dataset.num_feat(), tr_dataset.out_feat(), **model_hyperparams, device=device)
     # trainer
     trainer = trainer_constructor(
         model, tr_dataloader, ts_dataloader, device=device)
@@ -136,7 +139,7 @@ def retraining(
                 total_history = json.load(open(history_fn))
             total_history[title if title is not None else model.__class__.__name__] = history
             with open(history_fn, 'w') as fp:
-                json.dump(total_history, fp)
+                json.dump(total_history, fp, indent=4)
 
         if model_path is not None:
             torch.save(model, model_path)

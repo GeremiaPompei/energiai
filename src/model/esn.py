@@ -6,7 +6,7 @@ from src.model.anomaly_detector import AnomalyDetector
 
 class WeightsInitializer:
 
-    def __init__(self, requires_grad: bool = False, seed: int = 0, dtype: torch.dtype = torch.float64):
+    def __init__(self, requires_grad: bool = False, seed: int = 0, dtype: torch.dtype = torch.float32):
         self.generator = torch.Generator().manual_seed(seed)
         self.requires_grad = requires_grad
         self.dtype = dtype
@@ -112,6 +112,7 @@ class ESN(AnomalyDetector):
     def __init__(
             self,
             in_size: int,
+            out_size:int,
             device: str = 'cpu',
             **hyperparams: dict,
     ):
@@ -125,7 +126,7 @@ class ESN(AnomalyDetector):
         self.reservoir = Reservoir(in_size, hyperparams, initializer, device)
 
         self.readout = initializer(
-            (hyperparams['reservoir_size'] * hyperparams['n_layers'] + 1, in_size)
+            (hyperparams['reservoir_size'] * hyperparams['n_layers'] + 1, out_size)
         ).to(device)
         if initializer.requires_grad:
             self.readout = torch.nn.Parameter(self.readout)

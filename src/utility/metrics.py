@@ -4,18 +4,18 @@ eps = 1e-17
 
 
 def accuracy(y, p):
-    return (y - p == 0).to(torch.float64).mean().item()
+    return (y - p == 0).to(torch.float32).mean().item()
 
 
 def precision(y, p):
-    tp = torch.logical_and(y == 1, p == 1).to(torch.float64).sum().item()
-    fp = torch.logical_and(y == 0, p == 1).to(torch.float64).sum().item()
+    tp = torch.logical_and(y == 1, p == 1).to(torch.float32).sum().item()
+    fp = torch.logical_and(y == 0, p == 1).to(torch.float32).sum().item()
     return tp / (tp + fp + eps)
 
 
 def recall(y, p):
-    tp = torch.logical_and(y == 1, p == 1).to(torch.float64).sum().item()
-    fn = torch.logical_and(y == 1, p == 0).to(torch.float64).sum().item()
+    tp = torch.logical_and(y == 1, p == 1).to(torch.float32).sum().item()
+    fn = torch.logical_and(y == 1, p == 0).to(torch.float32).sum().item()
     return tp / (tp + fn + eps)
 
 

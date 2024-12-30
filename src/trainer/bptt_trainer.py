@@ -18,10 +18,11 @@ class BPTTTrainer(Trainer):
             tr_loss = 0
             self.model.train()
             self.model.reset()
-            for batch_idx, (data, _) in enumerate(self.tr_loader):
+            # for batch_idx, (data, _) in enumerate(self.tr_loader):
+            for batch_idx, (x,y, _) in enumerate(self.tr_loader):
                 optimizer.zero_grad()
-                data = data.to(self.device)
-                x, y = data[:, 1:], data[:, :-1]
+                # data = data.to(self.device)
+                # x, y = data[:, 1:], data[:, :-1]
                 p = self.model(x)
                 loss = self.criterion(y, p)
                 tr_loss += loss.item()

@@ -39,7 +39,7 @@ def preprocessing_pipeline(raw_dir: str = 'dataset/raw', output_dir: str = 'data
             dict(
                 mean=X_mean.tolist(),
                 std=X_std.tolist(),
-            ), fp
+            ), fp, indent=4
         )
 
     for filename, dataset in datasets.items():

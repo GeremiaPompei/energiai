@@ -34,5 +34,5 @@ class AnomalyDetector(torch.nn.Module):
         e = self._loss_(y, out)
         e_std = e.unfold(1, self.window, 1).std(-1)
         res = torch.logical_or(-self.threshold_perc * self.sigma > e_std, e_std > self.threshold_perc * self.sigma).to(
-            torch.float64)
+            torch.float32)
         return res, out.detach(), e_std.detach()
