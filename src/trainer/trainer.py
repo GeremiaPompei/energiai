@@ -30,11 +30,11 @@ class Trainer:
 
     def test(self, *args, **kwargs):
         # for batch_idx, (data, _) in enumerate(self.tr_loader):
-        for batch_idx, (x, y, _) in enumerate(self.tr_loader):
+        # for batch_idx, (x, y, _) in enumerate(self.tr_loader):
             # data = data.to(self.device)
             # x, y = data[:, 1:], data[:, :-1]
-            self.model.compute_batch_std(x, y)
-        self.model.compute_std()
+            # self.model.compute_batch_std(x, y)
+        # self.model.compute_std()
 
         outputs = []
         emissions_tracker = self.__construct_emissions_tracker__(
@@ -50,6 +50,7 @@ class Trainer:
             x = x.to(self.device)
             y = y.to(self.device)
             p, o, _ = self.model.predict(x, y)
+            
             labels = labels[:, -p.shape[1]:]
             p = p.mean(-1).unsqueeze(-1)
             outputs.append((y, o, labels, p))

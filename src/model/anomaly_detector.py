@@ -31,8 +31,11 @@ class AnomalyDetector(torch.nn.Module):
     @torch.no_grad()
     def predict(self, x, y):
         out = self(x)
+        discrete_out = (out > 0.5).to(torch.float32)
+        return discrete_out, out, 0
         e = self._loss_(y, out)
         e_std = e.unfold(1, self.window, 1).std(-1)
+        # print('uno:', -self.threshold_perc * self.sigma,'e standard:', e_std, e_std , 'ultimo', self.threshold_perc * self.sigma)
         res = torch.logical_or(-self.threshold_perc * self.sigma > e_std, e_std > self.threshold_perc * self.sigma).to(
             torch.float32)
         return res, out.detach(), e_std.detach()

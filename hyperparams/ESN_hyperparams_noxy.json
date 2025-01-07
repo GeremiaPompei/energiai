@@ -1,7 +1,7 @@
 {
     "best_hyperparams": {
-        "model_reservoir_size": 100,
-        "model_alpha": 0.8,
+        "model_reservoir_size": 300,
+        "model_alpha": 0.5,
         "model_input_ratio": 0.9,
         "model_spectral_radius": 0.99,
         "model_input_sparsity": 0.5,
@@ -13,7 +13,7 @@
         "model_seed": 0,
         "model_requires_grad": false
     },
-    "best_loss": 0.8321630312878123,
+    "best_loss": 0.8029046132422543,
     "cache": [
         {
             "hyperparams": {
@@ -30,7 +30,7 @@
                 "model_seed": 0,
                 "model_requires_grad": false
             },
-            "loss": 0.8312492689366366
+            "loss": 0.37318066151348894
         },
         {
             "hyperparams": {
@@ -47,7 +47,7 @@
                 "model_seed": 0,
                 "model_requires_grad": false
             },
-            "loss": 0.8293615769234313
+            "loss": 0.17329256474405144
         },
         {
             "hyperparams": {
@@ -64,7 +64,7 @@
                 "model_seed": 0,
                 "model_requires_grad": false
             },
-            "loss": 0.8312492689366366
+            "loss": 0.37318066151348894
         },
         {
             "hyperparams": {
@@ -81,7 +81,7 @@
                 "model_seed": 0,
                 "model_requires_grad": false
             },
-            "loss": 0.8314813728402526
+            "loss": 0.17360876938683478
         },
         {
             "hyperparams": {
@@ -98,7 +98,7 @@
                 "model_seed": 0,
                 "model_requires_grad": false
             },
-            "loss": 0.8293615769234313
+            "loss": 0.17329256474405144
         },
         {
             "hyperparams": {
@@ -115,7 +115,7 @@
                 "model_seed": 0,
                 "model_requires_grad": false
             },
-            "loss": 0.8321630312878123
+            "loss": 0.17794426518075704
         },
         {
             "hyperparams": {
@@ -132,7 +132,7 @@
                 "model_seed": 0,
                 "model_requires_grad": false
             },
-            "loss": 0.8314813728402526
+            "loss": 0.17360876938683478
         },
         {
             "hyperparams": {
@@ -149,7 +149,7 @@
                 "model_seed": 0,
                 "model_requires_grad": false
             },
-            "loss": 0.8016296973639709
+            "loss": 0.36895064400636784
         },
         {
             "hyperparams": {
@@ -166,7 +166,7 @@
                 "model_seed": 0,
                 "model_requires_grad": false
             },
-            "loss": 0.8321630312878123
+            "loss": 0.17794426518075704
         },
         {
             "hyperparams": {
@@ -183,7 +183,7 @@
                 "model_seed": 0,
                 "model_requires_grad": false
             },
-            "loss": 0.797685923821731
+            "loss": 0.1701966121559322
         },
         {
             "hyperparams": {
@@ -200,7 +200,7 @@
                 "model_seed": 0,
                 "model_requires_grad": false
             },
-            "loss": 0.8016296973639709
+            "loss": 0.36895064400636784
         },
         {
             "hyperparams": {
@@ -217,7 +217,7 @@
                 "model_seed": 0,
                 "model_requires_grad": false
             },
-            "loss": 0.7951989921311899
+            "loss": 0.3639477304515408
         },
         {
             "hyperparams": {
@@ -234,7 +234,7 @@
                 "model_seed": 0,
                 "model_requires_grad": false
             },
-            "loss": 0.797685923821731
+            "loss": 0.1701966121559322
         },
         {
             "hyperparams": {
@@ -251,7 +251,7 @@
                 "model_seed": 0,
                 "model_requires_grad": false
             },
-            "loss": 0.7934562143330539
+            "loss": 0.3697194065696155
         },
         {
             "hyperparams": {
@@ -268,7 +268,7 @@
                 "model_seed": 0,
                 "model_requires_grad": false
             },
-            "loss": 0.7951989921311899
+            "loss": 0.3639477304515408
         },
         {
             "hyperparams": {
@@ -285,7 +285,7 @@
                 "model_seed": 0,
                 "model_requires_grad": false
             },
-            "loss": 0.6601397573040186
+            "loss": 0.4042166639810077
         },
         {
             "hyperparams": {
@@ -302,7 +302,7 @@
                 "model_seed": 0,
                 "model_requires_grad": false
             },
-            "loss": 0.7934562143330539
+            "loss": 0.3697194065696155
         },
         {
             "hyperparams": {
@@ -319,7 +319,7 @@
                 "model_seed": 0,
                 "model_requires_grad": false
             },
-            "loss": 0.7232469242918382
+            "loss": 0.3927988566216487
         },
         {
             "hyperparams": {
@@ -336,7 +336,7 @@
                 "model_seed": 0,
                 "model_requires_grad": false
             },
-            "loss": 0.6601397573040186
+            "loss": 0.4042166639810077
         },
         {
             "hyperparams": {
@@ -353,7 +353,7 @@
                 "model_seed": 0,
                 "model_requires_grad": false
             },
-            "loss": 0.5868803298548992
+            "loss": 0.403098381514799
         },
         {
             "hyperparams": {
@@ -370,7 +370,7 @@
                 "model_seed": 0,
                 "model_requires_grad": false
             },
-            "loss": 0.7232469242918382
+            "loss": 0.3927988566216487
         },
         {
             "hyperparams": {
@@ -387,7 +387,7 @@
                 "model_seed": 0,
                 "model_requires_grad": false
             },
-            "loss": 0.6343604498621551
+            "loss": 0.3998918795045487
         },
         {
             "hyperparams": {
@@ -404,7 +404,7 @@
                 "model_seed": 0,
                 "model_requires_grad": false
             },
-            "loss": 0.5868803298548992
+            "loss": 0.403098381514799
         },
         {
             "hyperparams": {
@@ -421,7 +421,7 @@
                 "model_seed": 0,
                 "model_requires_grad": false
             },
-            "loss": 0.7241108664851558
+            "loss": 0.5411920355610224
         },
         {
             "hyperparams": {
@@ -438,7 +438,7 @@
                 "model_seed": 0,
                 "model_requires_grad": false
             },
-            "loss": 0.6343604498621551
+            "loss": 0.3998918795045487
         },
         {
             "hyperparams": {
@@ -455,7 +455,7 @@
                 "model_seed": 0,
                 "model_requires_grad": false
             },
-            "loss": 0.6552972208123211
+            "loss": 0.44920655377557495
         },
         {
             "hyperparams": {
@@ -472,7 +472,7 @@
                 "model_seed": 0,
                 "model_requires_grad": false
             },
-            "loss": 0.7241108664851558
+            "loss": 0.5411920355610224
         },
         {
             "hyperparams": {
@@ -489,7 +489,7 @@
                 "model_seed": 0,
                 "model_requires_grad": false
             },
-            "loss": 0.7457610046814489
+            "loss": 0.5118640182426792
         },
         {
             "hyperparams": {
@@ -506,7 +506,7 @@
                 "model_seed": 0,
                 "model_requires_grad": false
             },
-            "loss": 0.6552972208123211
+            "loss": 0.44920655377557495
         },
         {
             "hyperparams": {
@@ -523,7 +523,7 @@
                 "model_seed": 0,
                 "model_requires_grad": false
             },
-            "loss": 0.7117365111340271
+            "loss": 0.42168085804918914
         },
         {
             "hyperparams": {
@@ -540,7 +540,7 @@
                 "model_seed": 0,
                 "model_requires_grad": false
             },
-            "loss": 0.7457610046814489
+            "loss": 0.5118640182426792
         },
         {
             "hyperparams": {
@@ -557,7 +557,7 @@
                 "model_seed": 0,
                 "model_requires_grad": false
             },
-            "loss": 0.6620889504595786
+            "loss": 0.17631579053018143
         },
         {
             "hyperparams": {
@@ -574,7 +574,7 @@
                 "model_seed": 0,
                 "model_requires_grad": false
             },
-            "loss": 0.7117365111340271
+            "loss": 0.42168085804918914
         },
         {
             "hyperparams": {
@@ -591,7 +591,7 @@
                 "model_seed": 0,
                 "model_requires_grad": false
             },
-            "loss": 0.7587774417187975
+            "loss": 0.31376350942943154
         },
         {
             "hyperparams": {
@@ -608,7 +608,7 @@
                 "model_seed": 0,
                 "model_requires_grad": false
             },
-            "loss": 0.6620889504595786
+            "loss": 0.17631579053018143
         },
         {
             "hyperparams": {
@@ -625,7 +625,7 @@
                 "model_seed": 0,
                 "model_requires_grad": false
             },
-            "loss": 0.7794558965234218
+            "loss": 0.3168089804341571
         },
         {
             "hyperparams": {
@@ -642,7 +642,7 @@
                 "model_seed": 0,
                 "model_requires_grad": false
             },
-            "loss": 0.7587774417187975
+            "loss": 0.31376350942943154
         },
         {
             "hyperparams": {
@@ -659,7 +659,7 @@
                 "model_seed": 0,
                 "model_requires_grad": false
             },
-            "loss": 0.5874066273653121
+            "loss": 0.3164895810926278
         },
         {
             "hyperparams": {
@@ -676,7 +676,7 @@
                 "model_seed": 0,
                 "model_requires_grad": false
             },
-            "loss": 0.7794558965234218
+            "loss": 0.3168089804341571
         },
         {
             "hyperparams": {
@@ -693,7 +693,7 @@
                 "model_seed": 0,
                 "model_requires_grad": false
             },
-            "loss": 0.30265100233177733
+            "loss": 0.21979547731666543
         },
         {
             "hyperparams": {
@@ -710,7 +710,7 @@
                 "model_seed": 0,
                 "model_requires_grad": false
             },
-            "loss": 0.5874066273653121
+            "loss": 0.3164895810926278
         },
         {
             "hyperparams": {
@@ -727,7 +727,7 @@
                 "model_seed": 0,
                 "model_requires_grad": false
             },
-            "loss": 0.44211231166659426
+            "loss": 0.199711996906683
         },
         {
             "hyperparams": {
@@ -744,7 +744,7 @@
                 "model_seed": 0,
                 "model_requires_grad": false
             },
-            "loss": 0.30265100233177733
+            "loss": 0.21979547731666543
         },
         {
             "hyperparams": {
@@ -761,7 +761,7 @@
                 "model_seed": 0,
                 "model_requires_grad": false
             },
-            "loss": 0.5577741890432071
+            "loss": 0.17934553632635256
         },
         {
             "hyperparams": {
@@ -778,7 +778,7 @@
                 "model_seed": 0,
                 "model_requires_grad": false
             },
-            "loss": 0.44211231166659426
+            "loss": 0.199711996906683
         },
         {
             "hyperparams": {
@@ -795,7 +795,7 @@
                 "model_seed": 0,
                 "model_requires_grad": false
             },
-            "loss": 0.7552404221447215
+            "loss": 0.8029046132422543
         },
         {
             "hyperparams": {
@@ -812,7 +812,7 @@
                 "model_seed": 0,
                 "model_requires_grad": false
             },
-            "loss": 0.5577741890432071
+            "loss": 0.17934553632635256
         }
     ]
 }

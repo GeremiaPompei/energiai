@@ -37,8 +37,8 @@ def model_selection(
         shuffle=True,
         hyperparams_path='hyperparams/hyperparams.json',
         tqdm=None,
-        metric='accuracy',
-        criterion_metric=max,
+        metric='f1_score',
+        criterion_metric=max
 ):
     fix_seed()
     device = select_device()
@@ -130,7 +130,7 @@ def retraining(
     # trainer
     trainer = trainer_constructor(
         model, tr_dataloader, ts_dataloader, device=device)
-    if model_path is None or not os.path.exists(model_path):
+    if True: #model_path is None or not os.path.exists(model_path):
         history = trainer(**trainer_hyperparams, save_emissions=history_path)
         total_history = {}
         history_fn = f'{history_path}history.json'

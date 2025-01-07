@@ -12,7 +12,7 @@ def training_pipeline(do_model_selection=True):
     fix_seed()
     device = select_device()
 
-    tr_dataset, vl_dataset, ts_dataset  = create_sims_dataset(train_size=0.6, val_size=0.2, test_size=0.2, timestep = 300, offset =300)
+    tr_dataset, vl_dataset, ts_dataset  = create_sims_dataset(train_size=0.6, val_size=0.2, test_size=0.2, timestep = 300, offset =1)
 
     # batch_size = 16
     # train_loader = DataLoader(tr_dataset, batch_size=batch_size, shuffle=True)
@@ -25,15 +25,15 @@ def training_pipeline(do_model_selection=True):
         ('ESN', dict(
             hyperparams_list=gridsearch_generator(
                 model_reservoir_size=[100, 200, 300],
-                model_alpha=[0.5, 0.2, 0.8],
-                model_input_ratio=[0.7, 0.9],
-                model_spectral_radius=[1.2, 0.9],
+                model_alpha=[0.8, 0.5],  #usa 1 con pochi dati
+                model_input_ratio=[0.7, 0.9], #, 0.9
+                model_spectral_radius=[0.99],
                 model_input_sparsity=[0.5],
                 model_reservoir_sparsity=[0.9],
-                model_regularization=[0.001, 0.01, 0.0001],
+                model_regularization=[0.001], #, 0.01, 0.0001
                 model_n_layers=[2, 3],
-                model_washout=[50],
-                model_threshold_perc=[0.8, 1, 2, 3, 4],
+                model_washout=[100],
+                # model_threshold_perc=[0.01,0.001, 0.0001, 0.00001],
                 model_window=[20],
                 model_seed=[0],
                 model_requires_grad=[False],

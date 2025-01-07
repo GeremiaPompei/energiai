@@ -7,7 +7,7 @@ class RidgeRegressionTrainer(Trainer):
         tr_loss = 0
         self.model.train()
         # for batch_idx, (data, _) in enumerate(self.tr_loader):
-        for batch_idx, (x,y, _) in enumerate(self.tr_loader):
+        for batch_idx, (x,_, y) in enumerate(self.tr_loader): #(x,y, _) unsupervised
             # data = data.to(self.device)
             # A, B = self.model.compute_ab(data[:, 1:], data[:, :-1])
             # print(x[1,0], y[0,0])

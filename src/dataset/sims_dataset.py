@@ -9,13 +9,15 @@ def create_sims_dataset(path = 'C:\\Users\\lollo\\Lavoro\\Ricerca\\energiai\\dat
                          train_size=0.6, val_size=0.2, test_size=0.2, timestep = 300, offset =100):
 
     white_list = [
+        # 'x',
+        # 'y',
         'bedroom',
         'livingroom',
         'kitchen',
         'bathroom',
         'elapsed_time_cumulative',
         'elapsed_time',
-        'exceeds_average'
+        'exceeds_average'  
     ]
 
     df = pd.read_csv(path)
@@ -46,7 +48,18 @@ def create_sims_dataset(path = 'C:\\Users\\lollo\\Lavoro\\Ricerca\\energiai\\dat
         lambda row: 1 if row['elapsed_time_cumulative'] / 3600 > average_elapsed_time_by_room.get(row['room'], 0) else 0,
         axis=1
     )
+    interval = 1  # seconds
+    df['exist'] = [i % interval == 0 for i in range(len(df))]
+    df = df[df['exist']]
+
+    # df['room_change'] = df['room'] != df['room'].shift(-1)
+
+    # df = df[df['room_change']].drop(columns=['room_change'])
     df = df[white_list]
+    # print(df)
+
+
+    # return df
 
     # print(df)
 
@@ -89,7 +102,8 @@ class SimsDataset(Dataset):
         # x = data[:, :-1]
         # y = data[:-1, -1:]
         x_curr = data[:-1, :-1]
-        x_next = data[1:, :4]
+        x_next = data[1:, :-3]
+        # print('x_next è pari a:', x_next, '\n\nx_curr è pari a:', x_curr)
         y = data[1:, -1:]
         return torch.tensor(x_curr),torch.tensor(x_next),  torch.tensor(y)
     # , torch.tensor(label)
