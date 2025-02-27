@@ -5,12 +5,12 @@ from torch.utils.data import random_split
 
 
 
-def create_sims_dataset(path = 'C:\\Users\\lollo\\Lavoro\\Ricerca\\energiai\\dataset\\sims\\TSA.csv',
+def create_sims_dataset(path = 'C:\\Users\\lollo\\Lavoro\\Ricerca\\energiai\\dataset\\sims\\Mario_Rossi.csv',
                          train_size=0.6, val_size=0.2, test_size=0.2, timestep = 300, offset =100):
 
     white_list = [
-        # 'x',
-        # 'y',
+        'x',
+        'y',
         'bedroom',
         'livingroom',
         'kitchen',

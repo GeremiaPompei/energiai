@@ -1,0 +1,818 @@
+{
+    "best_hyperparams": {
+        "model_reservoir_size": 100,
+        "model_alpha": 0.8,
+        "model_input_ratio": 0.9,
+        "model_spectral_radius": 0.99,
+        "model_input_sparsity": 0.5,
+        "model_reservoir_sparsity": 0.9,
+        "model_regularization": 0.001,
+        "model_n_layers": 3,
+        "model_washout": 100,
+        "model_window": 20,
+        "model_seed": 0,
+        "model_requires_grad": false
+    },
+    "best_loss": 0.8321630312878123,
+    "cache": [
+        {
+            "hyperparams": {
+                "model_reservoir_size": 100,
+                "model_alpha": 0.8,
+                "model_input_ratio": 0.7,
+                "model_spectral_radius": 0.99,
+                "model_input_sparsity": 0.5,
+                "model_reservoir_sparsity": 0.9,
+                "model_regularization": 0.001,
+                "model_n_layers": 2,
+                "model_washout": 100,
+                "model_window": 20,
+                "model_seed": 0,
+                "model_requires_grad": false
+            },
+            "loss": 0.8312492689366366
+        },
+        {
+            "hyperparams": {
+                "model_reservoir_size": 100,
+                "model_alpha": 0.8,
+                "model_input_ratio": 0.7,
+                "model_spectral_radius": 0.99,
+                "model_input_sparsity": 0.5,
+                "model_reservoir_sparsity": 0.9,
+                "model_regularization": 0.001,
+                "model_n_layers": 3,
+                "model_washout": 100,
+                "model_window": 20,
+                "model_seed": 0,
+                "model_requires_grad": false
+            },
+            "loss": 0.8293615769234313
+        },
+        {
+            "hyperparams": {
+                "model_reservoir_size": 100,
+                "model_alpha": 0.8,
+                "model_input_ratio": 0.7,
+                "model_spectral_radius": 0.99,
+                "model_input_sparsity": 0.5,
+                "model_reservoir_sparsity": 0.9,
+                "model_regularization": 0.001,
+                "model_n_layers": 2,
+                "model_washout": 100,
+                "model_window": 20,
+                "model_seed": 0,
+                "model_requires_grad": false
+            },
+            "loss": 0.8312492689366366
+        },
+        {
+            "hyperparams": {
+                "model_reservoir_size": 100,
+                "model_alpha": 0.8,
+                "model_input_ratio": 0.9,
+                "model_spectral_radius": 0.99,
+                "model_input_sparsity": 0.5,
+                "model_reservoir_sparsity": 0.9,
+                "model_regularization": 0.001,
+                "model_n_layers": 2,
+                "model_washout": 100,
+                "model_window": 20,
+                "model_seed": 0,
+                "model_requires_grad": false
+            },
+            "loss": 0.8314813728402526
+        },
+        {
+            "hyperparams": {
+                "model_reservoir_size": 100,
+                "model_alpha": 0.8,
+                "model_input_ratio": 0.7,
+                "model_spectral_radius": 0.99,
+                "model_input_sparsity": 0.5,
+                "model_reservoir_sparsity": 0.9,
+                "model_regularization": 0.001,
+                "model_n_layers": 3,
+                "model_washout": 100,
+                "model_window": 20,
+                "model_seed": 0,
+                "model_requires_grad": false
+            },
+            "loss": 0.8293615769234313
+        },
+        {
+            "hyperparams": {
+                "model_reservoir_size": 100,
+                "model_alpha": 0.8,
+                "model_input_ratio": 0.9,
+                "model_spectral_radius": 0.99,
+                "model_input_sparsity": 0.5,
+                "model_reservoir_sparsity": 0.9,
+                "model_regularization": 0.001,
+                "model_n_layers": 3,
+                "model_washout": 100,
+                "model_window": 20,
+                "model_seed": 0,
+                "model_requires_grad": false
+            },
+            "loss": 0.8321630312878123
+        },
+        {
+            "hyperparams": {
+                "model_reservoir_size": 100,
+                "model_alpha": 0.8,
+                "model_input_ratio": 0.9,
+                "model_spectral_radius": 0.99,
+                "model_input_sparsity": 0.5,
+                "model_reservoir_sparsity": 0.9,
+                "model_regularization": 0.001,
+                "model_n_layers": 2,
+                "model_washout": 100,
+                "model_window": 20,
+                "model_seed": 0,
+                "model_requires_grad": false
+            },
+            "loss": 0.8314813728402526
+        },
+        {
+            "hyperparams": {
+                "model_reservoir_size": 100,
+                "model_alpha": 0.5,
+                "model_input_ratio": 0.7,
+                "model_spectral_radius": 0.99,
+                "model_input_sparsity": 0.5,
+                "model_reservoir_sparsity": 0.9,
+                "model_regularization": 0.001,
+                "model_n_layers": 2,
+                "model_washout": 100,
+                "model_window": 20,
+                "model_seed": 0,
+                "model_requires_grad": false
+            },
+            "loss": 0.8016296973639709
+        },
+        {
+            "hyperparams": {
+                "model_reservoir_size": 100,
+                "model_alpha": 0.8,
+                "model_input_ratio": 0.9,
+                "model_spectral_radius": 0.99,
+                "model_input_sparsity": 0.5,
+                "model_reservoir_sparsity": 0.9,
+                "model_regularization": 0.001,
+                "model_n_layers": 3,
+                "model_washout": 100,
+                "model_window": 20,
+                "model_seed": 0,
+                "model_requires_grad": false
+            },
+            "loss": 0.8321630312878123
+        },
+        {
+            "hyperparams": {
+                "model_reservoir_size": 100,
+                "model_alpha": 0.5,
+                "model_input_ratio": 0.7,
+                "model_spectral_radius": 0.99,
+                "model_input_sparsity": 0.5,
+                "model_reservoir_sparsity": 0.9,
+                "model_regularization": 0.001,
+                "model_n_layers": 3,
+                "model_washout": 100,
+                "model_window": 20,
+                "model_seed": 0,
+                "model_requires_grad": false
+            },
+            "loss": 0.797685923821731
+        },
+        {
+            "hyperparams": {
+                "model_reservoir_size": 100,
+                "model_alpha": 0.5,
+                "model_input_ratio": 0.7,
+                "model_spectral_radius": 0.99,
+                "model_input_sparsity": 0.5,
+                "model_reservoir_sparsity": 0.9,
+                "model_regularization": 0.001,
+                "model_n_layers": 2,
+                "model_washout": 100,
+                "model_window": 20,
+                "model_seed": 0,
+                "model_requires_grad": false
+            },
+            "loss": 0.8016296973639709
+        },
+        {
+            "hyperparams": {
+                "model_reservoir_size": 100,
+                "model_alpha": 0.5,
+                "model_input_ratio": 0.9,
+                "model_spectral_radius": 0.99,
+                "model_input_sparsity": 0.5,
+                "model_reservoir_sparsity": 0.9,
+                "model_regularization": 0.001,
+                "model_n_layers": 2,
+                "model_washout": 100,
+                "model_window": 20,
+                "model_seed": 0,
+                "model_requires_grad": false
+            },
+            "loss": 0.7951989921311899
+        },
+        {
+            "hyperparams": {
+                "model_reservoir_size": 100,
+                "model_alpha": 0.5,
+                "model_input_ratio": 0.7,
+                "model_spectral_radius": 0.99,
+                "model_input_sparsity": 0.5,
+                "model_reservoir_sparsity": 0.9,
+                "model_regularization": 0.001,
+                "model_n_layers": 3,
+                "model_washout": 100,
+                "model_window": 20,
+                "model_seed": 0,
+                "model_requires_grad": false
+            },
+            "loss": 0.797685923821731
+        },
+        {
+            "hyperparams": {
+                "model_reservoir_size": 100,
+                "model_alpha": 0.5,
+                "model_input_ratio": 0.9,
+                "model_spectral_radius": 0.99,
+                "model_input_sparsity": 0.5,
+                "model_reservoir_sparsity": 0.9,
+                "model_regularization": 0.001,
+                "model_n_layers": 3,
+                "model_washout": 100,
+                "model_window": 20,
+                "model_seed": 0,
+                "model_requires_grad": false
+            },
+            "loss": 0.7934562143330539
+        },
+        {
+            "hyperparams": {
+                "model_reservoir_size": 100,
+                "model_alpha": 0.5,
+                "model_input_ratio": 0.9,
+                "model_spectral_radius": 0.99,
+                "model_input_sparsity": 0.5,
+                "model_reservoir_sparsity": 0.9,
+                "model_regularization": 0.001,
+                "model_n_layers": 2,
+                "model_washout": 100,
+                "model_window": 20,
+                "model_seed": 0,
+                "model_requires_grad": false
+            },
+            "loss": 0.7951989921311899
+        },
+        {
+            "hyperparams": {
+                "model_reservoir_size": 200,
+                "model_alpha": 0.8,
+                "model_input_ratio": 0.7,
+                "model_spectral_radius": 0.99,
+                "model_input_sparsity": 0.5,
+                "model_reservoir_sparsity": 0.9,
+                "model_regularization": 0.001,
+                "model_n_layers": 2,
+                "model_washout": 100,
+                "model_window": 20,
+                "model_seed": 0,
+                "model_requires_grad": false
+            },
+            "loss": 0.6601397573040186
+        },
+        {
+            "hyperparams": {
+                "model_reservoir_size": 100,
+                "model_alpha": 0.5,
+                "model_input_ratio": 0.9,
+                "model_spectral_radius": 0.99,
+                "model_input_sparsity": 0.5,
+                "model_reservoir_sparsity": 0.9,
+                "model_regularization": 0.001,
+                "model_n_layers": 3,
+                "model_washout": 100,
+                "model_window": 20,
+                "model_seed": 0,
+                "model_requires_grad": false
+            },
+            "loss": 0.7934562143330539
+        },
+        {
+            "hyperparams": {
+                "model_reservoir_size": 200,
+                "model_alpha": 0.8,
+                "model_input_ratio": 0.7,
+                "model_spectral_radius": 0.99,
+                "model_input_sparsity": 0.5,
+                "model_reservoir_sparsity": 0.9,
+                "model_regularization": 0.001,
+                "model_n_layers": 3,
+                "model_washout": 100,
+                "model_window": 20,
+                "model_seed": 0,
+                "model_requires_grad": false
+            },
+            "loss": 0.7232469242918382
+        },
+        {
+            "hyperparams": {
+                "model_reservoir_size": 200,
+                "model_alpha": 0.8,
+                "model_input_ratio": 0.7,
+                "model_spectral_radius": 0.99,
+                "model_input_sparsity": 0.5,
+                "model_reservoir_sparsity": 0.9,
+                "model_regularization": 0.001,
+                "model_n_layers": 2,
+                "model_washout": 100,
+                "model_window": 20,
+                "model_seed": 0,
+                "model_requires_grad": false
+            },
+            "loss": 0.6601397573040186
+        },
+        {
+            "hyperparams": {
+                "model_reservoir_size": 200,
+                "model_alpha": 0.8,
+                "model_input_ratio": 0.9,
+                "model_spectral_radius": 0.99,
+                "model_input_sparsity": 0.5,
+                "model_reservoir_sparsity": 0.9,
+                "model_regularization": 0.001,
+                "model_n_layers": 2,
+                "model_washout": 100,
+                "model_window": 20,
+                "model_seed": 0,
+                "model_requires_grad": false
+            },
+            "loss": 0.5868803298548992
+        },
+        {
+            "hyperparams": {
+                "model_reservoir_size": 200,
+                "model_alpha": 0.8,
+                "model_input_ratio": 0.7,
+                "model_spectral_radius": 0.99,
+                "model_input_sparsity": 0.5,
+                "model_reservoir_sparsity": 0.9,
+                "model_regularization": 0.001,
+                "model_n_layers": 3,
+                "model_washout": 100,
+                "model_window": 20,
+                "model_seed": 0,
+                "model_requires_grad": false
+            },
+            "loss": 0.7232469242918382
+        },
+        {
+            "hyperparams": {
+                "model_reservoir_size": 200,
+                "model_alpha": 0.8,
+                "model_input_ratio": 0.9,
+                "model_spectral_radius": 0.99,
+                "model_input_sparsity": 0.5,
+                "model_reservoir_sparsity": 0.9,
+                "model_regularization": 0.001,
+                "model_n_layers": 3,
+                "model_washout": 100,
+                "model_window": 20,
+                "model_seed": 0,
+                "model_requires_grad": false
+            },
+            "loss": 0.6343604498621551
+        },
+        {
+            "hyperparams": {
+                "model_reservoir_size": 200,
+                "model_alpha": 0.8,
+                "model_input_ratio": 0.9,
+                "model_spectral_radius": 0.99,
+                "model_input_sparsity": 0.5,
+                "model_reservoir_sparsity": 0.9,
+                "model_regularization": 0.001,
+                "model_n_layers": 2,
+                "model_washout": 100,
+                "model_window": 20,
+                "model_seed": 0,
+                "model_requires_grad": false
+            },
+            "loss": 0.5868803298548992
+        },
+        {
+            "hyperparams": {
+                "model_reservoir_size": 200,
+                "model_alpha": 0.5,
+                "model_input_ratio": 0.7,
+                "model_spectral_radius": 0.99,
+                "model_input_sparsity": 0.5,
+                "model_reservoir_sparsity": 0.9,
+                "model_regularization": 0.001,
+                "model_n_layers": 2,
+                "model_washout": 100,
+                "model_window": 20,
+                "model_seed": 0,
+                "model_requires_grad": false
+            },
+            "loss": 0.7241108664851558
+        },
+        {
+            "hyperparams": {
+                "model_reservoir_size": 200,
+                "model_alpha": 0.8,
+                "model_input_ratio": 0.9,
+                "model_spectral_radius": 0.99,
+                "model_input_sparsity": 0.5,
+                "model_reservoir_sparsity": 0.9,
+                "model_regularization": 0.001,
+                "model_n_layers": 3,
+                "model_washout": 100,
+                "model_window": 20,
+                "model_seed": 0,
+                "model_requires_grad": false
+            },
+            "loss": 0.6343604498621551
+        },
+        {
+            "hyperparams": {
+                "model_reservoir_size": 200,
+                "model_alpha": 0.5,
+                "model_input_ratio": 0.7,
+                "model_spectral_radius": 0.99,
+                "model_input_sparsity": 0.5,
+                "model_reservoir_sparsity": 0.9,
+                "model_regularization": 0.001,
+                "model_n_layers": 3,
+                "model_washout": 100,
+                "model_window": 20,
+                "model_seed": 0,
+                "model_requires_grad": false
+            },
+            "loss": 0.6552972208123211
+        },
+        {
+            "hyperparams": {
+                "model_reservoir_size": 200,
+                "model_alpha": 0.5,
+                "model_input_ratio": 0.7,
+                "model_spectral_radius": 0.99,
+                "model_input_sparsity": 0.5,
+                "model_reservoir_sparsity": 0.9,
+                "model_regularization": 0.001,
+                "model_n_layers": 2,
+                "model_washout": 100,
+                "model_window": 20,
+                "model_seed": 0,
+                "model_requires_grad": false
+            },
+            "loss": 0.7241108664851558
+        },
+        {
+            "hyperparams": {
+                "model_reservoir_size": 200,
+                "model_alpha": 0.5,
+                "model_input_ratio": 0.9,
+                "model_spectral_radius": 0.99,
+                "model_input_sparsity": 0.5,
+                "model_reservoir_sparsity": 0.9,
+                "model_regularization": 0.001,
+                "model_n_layers": 2,
+                "model_washout": 100,
+                "model_window": 20,
+                "model_seed": 0,
+                "model_requires_grad": false
+            },
+            "loss": 0.7457610046814489
+        },
+        {
+            "hyperparams": {
+                "model_reservoir_size": 200,
+                "model_alpha": 0.5,
+                "model_input_ratio": 0.7,
+                "model_spectral_radius": 0.99,
+                "model_input_sparsity": 0.5,
+                "model_reservoir_sparsity": 0.9,
+                "model_regularization": 0.001,
+                "model_n_layers": 3,
+                "model_washout": 100,
+                "model_window": 20,
+                "model_seed": 0,
+                "model_requires_grad": false
+            },
+            "loss": 0.6552972208123211
+        },
+        {
+            "hyperparams": {
+                "model_reservoir_size": 200,
+                "model_alpha": 0.5,
+                "model_input_ratio": 0.9,
+                "model_spectral_radius": 0.99,
+                "model_input_sparsity": 0.5,
+                "model_reservoir_sparsity": 0.9,
+                "model_regularization": 0.001,
+                "model_n_layers": 3,
+                "model_washout": 100,
+                "model_window": 20,
+                "model_seed": 0,
+                "model_requires_grad": false
+            },
+            "loss": 0.7117365111340271
+        },
+        {
+            "hyperparams": {
+                "model_reservoir_size": 200,
+                "model_alpha": 0.5,
+                "model_input_ratio": 0.9,
+                "model_spectral_radius": 0.99,
+                "model_input_sparsity": 0.5,
+                "model_reservoir_sparsity": 0.9,
+                "model_regularization": 0.001,
+                "model_n_layers": 2,
+                "model_washout": 100,
+                "model_window": 20,
+                "model_seed": 0,
+                "model_requires_grad": false
+            },
+            "loss": 0.7457610046814489
+        },
+        {
+            "hyperparams": {
+                "model_reservoir_size": 300,
+                "model_alpha": 0.8,
+                "model_input_ratio": 0.7,
+                "model_spectral_radius": 0.99,
+                "model_input_sparsity": 0.5,
+                "model_reservoir_sparsity": 0.9,
+                "model_regularization": 0.001,
+                "model_n_layers": 2,
+                "model_washout": 100,
+                "model_window": 20,
+                "model_seed": 0,
+                "model_requires_grad": false
+            },
+            "loss": 0.6620889504595786
+        },
+        {
+            "hyperparams": {
+                "model_reservoir_size": 200,
+                "model_alpha": 0.5,
+                "model_input_ratio": 0.9,
+                "model_spectral_radius": 0.99,
+                "model_input_sparsity": 0.5,
+                "model_reservoir_sparsity": 0.9,
+                "model_regularization": 0.001,
+                "model_n_layers": 3,
+                "model_washout": 100,
+                "model_window": 20,
+                "model_seed": 0,
+                "model_requires_grad": false
+            },
+            "loss": 0.7117365111340271
+        },
+        {
+            "hyperparams": {
+                "model_reservoir_size": 300,
+                "model_alpha": 0.8,
+                "model_input_ratio": 0.7,
+                "model_spectral_radius": 0.99,
+                "model_input_sparsity": 0.5,
+                "model_reservoir_sparsity": 0.9,
+                "model_regularization": 0.001,
+                "model_n_layers": 3,
+                "model_washout": 100,
+                "model_window": 20,
+                "model_seed": 0,
+                "model_requires_grad": false
+            },
+            "loss": 0.7587774417187975
+        },
+        {
+            "hyperparams": {
+                "model_reservoir_size": 300,
+                "model_alpha": 0.8,
+                "model_input_ratio": 0.7,
+                "model_spectral_radius": 0.99,
+                "model_input_sparsity": 0.5,
+                "model_reservoir_sparsity": 0.9,
+                "model_regularization": 0.001,
+                "model_n_layers": 2,
+                "model_washout": 100,
+                "model_window": 20,
+                "model_seed": 0,
+                "model_requires_grad": false
+            },
+            "loss": 0.6620889504595786
+        },
+        {
+            "hyperparams": {
+                "model_reservoir_size": 300,
+                "model_alpha": 0.8,
+                "model_input_ratio": 0.9,
+                "model_spectral_radius": 0.99,
+                "model_input_sparsity": 0.5,
+                "model_reservoir_sparsity": 0.9,
+                "model_regularization": 0.001,
+                "model_n_layers": 2,
+                "model_washout": 100,
+                "model_window": 20,
+                "model_seed": 0,
+                "model_requires_grad": false
+            },
+            "loss": 0.7794558965234218
+        },
+        {
+            "hyperparams": {
+                "model_reservoir_size": 300,
+                "model_alpha": 0.8,
+                "model_input_ratio": 0.7,
+                "model_spectral_radius": 0.99,
+                "model_input_sparsity": 0.5,
+                "model_reservoir_sparsity": 0.9,
+                "model_regularization": 0.001,
+                "model_n_layers": 3,
+                "model_washout": 100,
+                "model_window": 20,
+                "model_seed": 0,
+                "model_requires_grad": false
+            },
+            "loss": 0.7587774417187975
+        },
+        {
+            "hyperparams": {
+                "model_reservoir_size": 300,
+                "model_alpha": 0.8,
+                "model_input_ratio": 0.9,
+                "model_spectral_radius": 0.99,
+                "model_input_sparsity": 0.5,
+                "model_reservoir_sparsity": 0.9,
+                "model_regularization": 0.001,
+                "model_n_layers": 3,
+                "model_washout": 100,
+                "model_window": 20,
+                "model_seed": 0,
+                "model_requires_grad": false
+            },
+            "loss": 0.5874066273653121
+        },
+        {
+            "hyperparams": {
+                "model_reservoir_size": 300,
+                "model_alpha": 0.8,
+                "model_input_ratio": 0.9,
+                "model_spectral_radius": 0.99,
+                "model_input_sparsity": 0.5,
+                "model_reservoir_sparsity": 0.9,
+                "model_regularization": 0.001,
+                "model_n_layers": 2,
+                "model_washout": 100,
+                "model_window": 20,
+                "model_seed": 0,
+                "model_requires_grad": false
+            },
+            "loss": 0.7794558965234218
+        },
+        {
+            "hyperparams": {
+                "model_reservoir_size": 300,
+                "model_alpha": 0.5,
+                "model_input_ratio": 0.7,
+                "model_spectral_radius": 0.99,
+                "model_input_sparsity": 0.5,
+                "model_reservoir_sparsity": 0.9,
+                "model_regularization": 0.001,
+                "model_n_layers": 2,
+                "model_washout": 100,
+                "model_window": 20,
+                "model_seed": 0,
+                "model_requires_grad": false
+            },
+            "loss": 0.30265100233177733
+        },
+        {
+            "hyperparams": {
+                "model_reservoir_size": 300,
+                "model_alpha": 0.8,
+                "model_input_ratio": 0.9,
+                "model_spectral_radius": 0.99,
+                "model_input_sparsity": 0.5,
+                "model_reservoir_sparsity": 0.9,
+                "model_regularization": 0.001,
+                "model_n_layers": 3,
+                "model_washout": 100,
+                "model_window": 20,
+                "model_seed": 0,
+                "model_requires_grad": false
+            },
+            "loss": 0.5874066273653121
+        },
+        {
+            "hyperparams": {
+                "model_reservoir_size": 300,
+                "model_alpha": 0.5,
+                "model_input_ratio": 0.7,
+                "model_spectral_radius": 0.99,
+                "model_input_sparsity": 0.5,
+                "model_reservoir_sparsity": 0.9,
+                "model_regularization": 0.001,
+                "model_n_layers": 3,
+                "model_washout": 100,
+                "model_window": 20,
+                "model_seed": 0,
+                "model_requires_grad": false
+            },
+            "loss": 0.44211231166659426
+        },
+        {
+            "hyperparams": {
+                "model_reservoir_size": 300,
+                "model_alpha": 0.5,
+                "model_input_ratio": 0.7,
+                "model_spectral_radius": 0.99,
+                "model_input_sparsity": 0.5,
+                "model_reservoir_sparsity": 0.9,
+                "model_regularization": 0.001,
+                "model_n_layers": 2,
+                "model_washout": 100,
+                "model_window": 20,
+                "model_seed": 0,
+                "model_requires_grad": false
+            },
+            "loss": 0.30265100233177733
+        },
+        {
+            "hyperparams": {
+                "model_reservoir_size": 300,
+                "model_alpha": 0.5,
+                "model_input_ratio": 0.9,
+                "model_spectral_radius": 0.99,
+                "model_input_sparsity": 0.5,
+                "model_reservoir_sparsity": 0.9,
+                "model_regularization": 0.001,
+                "model_n_layers": 2,
+                "model_washout": 100,
+                "model_window": 20,
+                "model_seed": 0,
+                "model_requires_grad": false
+            },
+            "loss": 0.5577741890432071
+        },
+        {
+            "hyperparams": {
+                "model_reservoir_size": 300,
+                "model_alpha": 0.5,
+                "model_input_ratio": 0.7,
+                "model_spectral_radius": 0.99,
+                "model_input_sparsity": 0.5,
+                "model_reservoir_sparsity": 0.9,
+                "model_regularization": 0.001,
+                "model_n_layers": 3,
+                "model_washout": 100,
+                "model_window": 20,
+                "model_seed": 0,
+                "model_requires_grad": false
+            },
+            "loss": 0.44211231166659426
+        },
+        {
+            "hyperparams": {
+                "model_reservoir_size": 300,
+                "model_alpha": 0.5,
+                "model_input_ratio": 0.9,
+                "model_spectral_radius": 0.99,
+                "model_input_sparsity": 0.5,
+                "model_reservoir_sparsity": 0.9,
+                "model_regularization": 0.001,
+                "model_n_layers": 3,
+                "model_washout": 100,
+                "model_window": 20,
+                "model_seed": 0,
+                "model_requires_grad": false
+            },
+            "loss": 0.7552404221447215
+        },
+        {
+            "hyperparams": {
+                "model_reservoir_size": 300,
+                "model_alpha": 0.5,
+                "model_input_ratio": 0.9,
+                "model_spectral_radius": 0.99,
+                "model_input_sparsity": 0.5,
+                "model_reservoir_sparsity": 0.9,
+                "model_regularization": 0.001,
+                "model_n_layers": 2,
+                "model_washout": 100,
+                "model_window": 20,
+                "model_seed": 0,
+                "model_requires_grad": false
+            },
+            "loss": 0.5577741890432071
+        }
+    ]
+}
